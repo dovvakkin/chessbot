@@ -52,7 +52,9 @@ def game_start(message):
 @bot.message_handler(commands=['start'])
 def game_start(message):
     current_games[message.chat.id] = GameBoard()
-    bot.send_message(message.chat.id, 'Сделай свой ход', reply_markup=make_keyboard())
+    chessboard_url = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/AAA_SVG_Chessboard_and_chess_pieces_02.svg/1024px-AAA_SVG_Chessboard_and_chess_pieces_02.svg.png?20200505220000"
+    bot.send_photo(message.chat.id, photo=chessboard_url, caption='Сделай свой ход', reply_markup=make_keyboard())
+    #bot.send_message(message.chat.id, 'Сделай свой ход', reply_markup=make_keyboard())
 
 
 @bot.callback_query_handler(func=lambda call: True)
@@ -64,33 +66,40 @@ def handle_query(call):
         if current_games[chat_id].check_move_valid():
             # обрабатывать ход
             current_games[chat_id].clear_accum()
-            bot.edit_message_text(
+            url = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/AAA_SVG_Chessboard_and_chess_pieces_02.svg/1024px-AAA_SVG_Chessboard_and_chess_pieces_02.svg.png?20200505220000"
+            bot.edit_message_media(
                 chat_id=call.message.chat.id,
-                text=f"Сделай следующий ход",
+                media=types.InputMediaPhoto(media=url),
+                message_id=call.message.message_id,
+                reply_markup=make_keyboard()
+            )
+            bot.edit_message_caption(
+                chat_id=call.message.chat.id,
+                caption=f"Сделай следующий ход",
                 message_id=call.message.message_id,
                 reply_markup=make_keyboard()
             )
         else:
-            bot.edit_message_text(
+            bot.edit_message_caption(
                 chat_id=call.message.chat.id,
-                text="Невозможный ход",
+                caption="Невозможный ход",
                 message_id=call.message.message_id,
                 reply_markup=make_keyboard()
             )
             current_games[chat_id].clear_accum()
     else:
         if current_games[chat_id].has_piece_under(move):
-            bot.edit_message_text(
+            bot.edit_message_caption(
                 chat_id=call.message.chat.id,
-                text=f"Куда поставить фигуру с {move}",
+                caption=f"Куда поставить фигуру с {move}",
                 message_id=call.message.message_id,
                 reply_markup=make_keyboard()
             )
             current_games[chat_id].accumulate_move(move)
         else:
-            bot.edit_message_text(
+            bot.edit_message_caption(
                 chat_id=call.message.chat.id,
-                text=f"Фигуры не выбрано",
+                caption=f"Фигуры не выбрано",
                 message_id=call.message.message_id,
                 reply_markup=make_keyboard()
             )
@@ -109,4 +118,5 @@ def create_new_table(message):
 
 
 if __name__ == '__main__':
+    print('Поехали!')
     bot.polling() 
