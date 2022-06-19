@@ -3,6 +3,25 @@ from . import piece
 
 
 class Chess():
+    """
+    A class to represent the game of chess.
+    
+    ...
+    Attributes:
+    -----------
+    board : Board
+        represents the chess board of the game
+    turn : bool
+        True if white's turn
+    turn_number : int
+        Counter of rthe current move
+    halfstep_number : int
+        Counter of halfsteps (only pawns)
+    random_mode : bool
+        Random mode for shess positions
+    castling : str
+        String describing possibility of castling in FEN
+    """
 
     def __init__(self, random_mode=False):
         self.board = board.Board()
@@ -19,7 +38,6 @@ class Chess():
             self.castling = "KQkq"
 
         self.fen = self._update_fen()
-        print(self.fen)
 
     def has_piece_under(self, start):
         if self.board.board[start[0]][start[1]] == None:
@@ -29,18 +47,31 @@ class Chess():
         return True
 
     def move(self, start, to):
+        """
+        Moves a piece at `start` to `to`. 
+        Does nothing if there is no piece at the starting point.
+        Does nothing if the piece at `start` belongs to the wrong color for the current turn.
+        Does nothing if moving the piece from `start` to `to` is not a valid move.
+        start : tup
+            Position of a piece to be moved
+        to : tup
+            Position of where the piece is to be moved
+        
+        precondition: `start` and `to` are valid positions on the board
+        """
+
         if self.board.board[start[0]][start[1]] == None:
-            return False
+            return 0
 
         target_piece = self.board.board[start[0]][start[1]]
         if self.turn != target_piece.color:
-            return False
+            return 0
 
         end_piece = self.board.board[to[0]][to[1]]
         is_end_piece = end_piece != None
 
         if is_end_piece and self.board.board[start[0]][start[1]].color == end_piece.color:
-            return False
+            return 0
 
         if target_piece.is_valid_move(self.board, start, to):
 
@@ -80,7 +111,7 @@ class Chess():
                                      ][self.board.white_ghost_piece[1]] = None
                 self.turn = not self.turn
                 self._update_fen()
-                return True
+                return 1
 
             if target_piece.name == 'P' and (to[0] == 0 or to[0] == 7):
                 self.board.board[to[0]][to[1]] = piece.Queen(self.turn)
@@ -97,7 +128,7 @@ class Chess():
 
                 self.turn = not self.turn
                 self._update_fen()
-                return True
+                return 1
 
             if self.board.board[to[0]][to[1]]:
                 if self.board.board[to[0]][to[1]].name == "GP":
@@ -112,6 +143,9 @@ class Chess():
                         self.board.board[self.board.white_ghost_piece[0] -
                                          1][self.board.black_ghost_piece[1]] = None
                         self.board.white_ghost_piece = None
+                if self.board.board[to[0]][to[1]].name == 'K':
+                    return -1
+                    
 
             self.board.board[to[0]][to[1]] = target_piece
             self.board.board[start[0]][start[1]] = None
@@ -127,11 +161,15 @@ class Chess():
 
             self.turn = not self.turn
             self._update_fen()
-            return True
+            return 0
         else:
-            return False
+            return 1
 
     def _reverse_translate(self, pos):
+
+        """
+        Translates coordinates to literal positions 
+        """
 
 
         dictionary = {0: 'a', 1: 'b', 2: 'c',
@@ -183,6 +221,10 @@ class Chess():
         return self.fen
 
 def translate(s):
+
+    """
+    Translates literal positions to coordinates 
+    """
     try:
         row = int(s[1])
         col = s[0]

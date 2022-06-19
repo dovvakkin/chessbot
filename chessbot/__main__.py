@@ -79,7 +79,8 @@ def handle_query(call):
     chat_id = call.message.chat.id
     if current_games[chat_id].has_prev_cell():
         current_games[chat_id].set_move_to(move)
-        if current_games[chat_id].check_move_valid():
+        move_check = current_games[chat_id].check_move_valid()
+        if move_check == 1:
             # обрабатывать ход
             current_games[chat_id].clear_accum()
             #url = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/AAA_SVG_Chessboard_and_chess_pieces_02.svg/1024px-AAA_SVG_Chessboard_and_chess_pieces_02.svg.png?20200505220000"
@@ -101,28 +102,47 @@ def handle_query(call):
             time.sleep(5)
             print(current_games[chat_id].chess.fen)
             move = stockfish_solver.make_step(current_games[chat_id].chess.fen)
-            current_games[chat_id].set_move_start(move[0:2])
-            current_games[chat_id].set_move_to(move[2:4])
-
-            if current_games[chat_id].check_move_valid():
-                current_games[chat_id].clear_accum()
-                img = open("chessbot/Current_game/board.png", 'rb')
-                bot.edit_message_media(
-                    chat_id=call.message.chat.id,
-                    media=types.InputMediaPhoto(media=img),
-                    message_id=call.message.message_id,
-                    reply_markup=make_keyboard()
-                )
+            if move is None:
                 bot.edit_message_caption(
                     chat_id=call.message.chat.id,
-                    caption=_("Сделай следующий ход"),
-                    message_id=call.message.message_id,
-                    reply_markup=make_keyboard()
+                    caption=_("Победа!!!!!!"),
+                    message_id=call.message.message_id
                 )
-                current_games[chat_id].prev_state = 0
             else:
-                print("KEK")
-        else:
+                current_games[chat_id].set_move_start(move[0:2])
+                current_games[chat_id].set_move_to(move[2:4])
+
+                bot_move_check = current_games[chat_id].check_move_valid()
+                if bot_move_check == 1:
+                    current_games[chat_id].clear_accum()
+                    img = open("chessbot/Current_game/board.png", 'rb')
+                    bot.edit_message_media(
+                        chat_id=call.message.chat.id,
+                        media=types.InputMediaPhoto(media=img),
+                        message_id=call.message.message_id,
+                        reply_markup=make_keyboard()
+                    )
+                    bot.edit_message_caption(
+                        chat_id=call.message.chat.id,
+                        caption=_("Сделай следующий ход"),
+                        message_id=call.message.message_id,
+                        reply_markup=make_keyboard()
+                    )
+                    current_games[chat_id].prev_state = 0
+                elif bot_move_check == 0:
+                    bot.edit_message_caption(
+                        chat_id=call.message.chat.id,
+                        caption=_("Победа!!!!!!"),
+                        message_id=call.message.message_id
+                    )
+                else:
+                    bot.edit_message_caption(
+                        chat_id=call.message.chat.id,
+                        caption=_("Поражение((("),
+                        message_id=call.message.message_id
+                    )
+                    current_games[chat_id].clear_accum()
+        elif move_check == 0:
             if current_games[chat_id].prev_state != 1:
                 bot.edit_message_caption(
                     chat_id=call.message.chat.id,
@@ -131,6 +151,13 @@ def handle_query(call):
                     reply_markup=make_keyboard()
                 )
             current_games[chat_id].prev_state = 1
+            current_games[chat_id].clear_accum()
+        else:
+            bot.edit_message_caption(
+                chat_id=call.message.chat.id,
+                caption=_("Победа!!!!!!"),
+                message_id=call.message.message_id
+            )
             current_games[chat_id].clear_accum()
     else:
         if current_games[chat_id].has_piece_under(move):

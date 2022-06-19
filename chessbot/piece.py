@@ -1,4 +1,10 @@
+from copy import deepcopy
+
 def check_knight(color, board, pos):
+    """
+    Check if there is a knight of the opposite `color` at
+    position `pos` on board `board`.
+    """
     piece = board.board[pos[0]][pos[1]]
     if piece != None and piece.color != color and piece.name == 'N':
         return False
@@ -6,6 +12,10 @@ def check_knight(color, board, pos):
 
 
 def check_diag_castle(color, board, start, to):
+    """
+    Checks the diagonal path from `start` (non-inclusive) to `to` (inclusive)
+    on board `board` for any threats from the opposite `color`
+    """
     if abs(start[0] - to[0]) != abs(start[1] - to[1]):
         return False
 
@@ -21,6 +31,7 @@ def check_diag_castle(color, board, start, to):
         return False
 
     while (i <= to[0] if x_pos == 1 else i >= to[0]):
+
         if exists_piece and board.board[i][j].color != color:
             if board.board[i][j].name in ['B', 'Q']:
                 return False
@@ -30,13 +41,20 @@ def check_diag_castle(color, board, start, to):
             return True
         i += x_pos
         j += y_pos
-        print(i, j)
+
+        if min(i, j) < 0 or max(i, j) > 7:
+            continue
+
         exists_piece = board.board[i][j] != None
 
     return True
 
 
 def check_diag(board, start, to):
+    """
+    Checks if there are no pieces along the diagonal path from
+    `start` (non-inclusive) to `to` (non-inclusive). 
+    """
     if abs(start[0] - to[0]) != abs(start[1] - to[1]):
         return False
 
@@ -53,7 +71,89 @@ def check_diag(board, start, to):
     return True
 
 
+def check_check(color, board, position):
+    
+    """
+    color: Boolean
+    True if White, False if Black
+
+    board: List
+    list of Pieces / None
+
+    position: tuple(2)
+    King's position
+
+    Checking if King Piece is in check.
+    """
+
+    # 1 - check through all 8 directions:
+
+    directions = [[1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1], [0, 1]]
+    knight_directions = [[-2, 1], [-1, 2], [1, 2], [2, 1], [2, -1], [1, -2], [-1, -2], [-2, -1]]
+
+    for direction in knight_directions:
+        # checking for Horse
+
+        x, y = direction[0] + position[0], direction[1] + position[1]
+
+        if min(x, y) < 0 or max(x, y) > 7:
+            continue
+
+        if ~check_knight(color, board, (x, y)):
+            return True
+
+    for direction in directions:
+
+        i, j = deepcopy(position)
+        x_dir, y_dir = direction
+        first_step = True
+
+        while min(i, j) >= 0 and max(i, j) <= 7:
+
+            i += x_dir
+            j += y_dir
+
+            if min(i, j) < 0 or max(i, j) > 7:
+                break
+
+            if board.board[i][j] == None:
+                continue
+            # при проверке соседних клеток хотим игнорировать самого короля
+            if board.board[i][j].name == 'K' and board.board[i][j].color == color: 
+                continue
+
+            if board.board[i][j].color == color:
+                    break
+
+            if abs(direction[0]) + abs(direction[1]) == 2: #diag
+                
+                if first_step:
+                    first_step = False
+
+                    if board.board[i][j] == 'P':
+
+                        if color: # white king
+                            if i < position[0]:
+                                return True
+                        else:
+                            if i > position[0]:
+                                return False
+
+                if board.board[i][j].name in ['B', 'Q']:
+                    return True
+
+            else: #line
+
+                if board.board[i][j].name in ['R', 'Q']:
+                    return True
+
+    return False
+
 def check_updown_castle(color, board, start, to):
+    """
+    Checks if there are any threats from the opposite `color` from `start` (non-inclusive)
+    to `to` (inclusive) on board `board`.
+    """
 
     x_pos = 1 if to[0] - start[0] > 0 else -1
     i = start[0] + x_pos
@@ -71,10 +171,15 @@ def check_updown_castle(color, board, start, to):
         if board.board[i][start[1]] != None and board.board[i][start[1]].color == color:
             return True
 
+        i += x_pos
+
     return True
 
-
 def check_updown(board, start, to):
+    """
+    Checks if there are no pieces along the vertical or horizontal path
+    from `start` (non-inclusive) to `to` (non-inclusive). 
+    """
     if start[0] == to[0]:
         smaller_y = start[1] if start[1] < to[1] else to[1]
         bigger_y = start[1] if start[1] > to[1] else to[1]
@@ -94,6 +199,22 @@ def check_updown(board, start, to):
 
 
 class Piece():
+    """
+    A class to represent a piece in chess
+    ...
+    Attributes:
+    -----------
+    name : str
+        Represents the name of a piece as following - 
+        Pawn -> P
+        Rook -> R
+        Knight -> N
+        Bishop -> B
+        Queen -> Q
+        King -> K
+    color : bool
+        True if piece is white
+    """
     def __init__(self, color):
         self.name = ""
         self.color = color
@@ -161,6 +282,9 @@ class King(Piece):
         self.first_move = first_move
 
     def can_castle(self, board, start, to, right):
+        """
+        Returns True if king at `start` can move to `to` on `board` for castling.
+        """
         if self.color and right:
             knight_attack = check_knight(self.color, board, (6, 3)) and \
                 check_knight(self.color, board, (6, 4)) and \
@@ -271,6 +395,7 @@ class King(Piece):
 
             updowns = check_updown_castle(self.color, board, (0, 2), (7, 2)) and \
                 check_updown_castle(self.color, board, (0, 3), (7, 3))
+
             if not updowns:
                 return False
 
