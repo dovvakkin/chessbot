@@ -12,6 +12,8 @@ Welcome to chessbot's documentation!
 
    modules
 
+   user_docs
+
 
 
 Indices and tables
