@@ -24,9 +24,9 @@ class Chess():
         String describing possibility of castling in FEN
     """
 
-    def __init__(self, random_mode=False):
+    def __init__(self, random_mode=False, notation = board.INITIAL_NOTATION):
         """Initialize game state."""
-        self.board = board.Board()
+        self.board = board.Board(random_mode = random_mode, notation = notation)
 
         self.turn = True
         self.turn_number = 1
@@ -144,7 +144,7 @@ class Chess():
                         self.board.black_ghost_piece = None
                     else:
                         self.board.board[self.board.white_ghost_piece[0] -
-                                         1][self.board.black_ghost_piece[1]] = None
+                                         1][self.board.white_ghost_piece[1]] = None
                         self.board.white_ghost_piece = None
                 if self.board.board[to[0]][to[1]].name == 'K':
                     return -1
