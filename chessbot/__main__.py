@@ -103,7 +103,9 @@ def handle_query(call):
             move = stockfish_solver.make_step(current_games[chat_id].chess.fen)
             current_games[chat_id].set_move_start(move[0:2])
             current_games[chat_id].set_move_to(move[2:4])
+
             if current_games[chat_id].check_move_valid():
+                img = open("chessbot/Current_game/board.png", 'rb')
                 bot.edit_message_media(
                     chat_id=call.message.chat.id,
                     media=types.InputMediaPhoto(media=img),

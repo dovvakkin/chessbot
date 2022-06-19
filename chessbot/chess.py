@@ -20,19 +20,6 @@ class Chess():
 
         self.fen = self._update_fen()
         print(self.fen)
-    def promotion(self, pos, promote):
-        pawn = None
-        while pawn == None:
-            if promote in ['Q', 'R', 'N', 'B']:
-                if promote == 'Q':
-                    pawn = piece.Queen(True)
-                elif promote == 'R':
-                    pawn = piece.Rook(True)
-                elif promote == 'N':
-                    pawn = piece.Knight(True)
-                elif promote == 'B':
-                    pawn = piece.Bishop(True)
-        self.board.board[pos[0]][pos[1]] = pawn
 
     def has_piece_under(self, start):
         if self.board.board[start[0]][start[1]] == None:
@@ -91,6 +78,23 @@ class Chess():
                 elif not self.turn and self.board.white_ghost_piece:
                     self.board.board[self.board.white_ghost_piece[0]
                                      ][self.board.white_ghost_piece[1]] = None
+                self.turn = not self.turn
+                self._update_fen()
+                return True
+
+            if target_piece.name == 'P' and (to[0] == 0 or to[0] == 7):
+                self.board.board[to[0]][to[1]] = piece.Queen(self.turn)
+                self.board.board[start[0]][start[1]] = None
+                
+                if self.turn and self.board.black_ghost_piece:
+                    self.board.board[self.board.black_ghost_piece[0]
+                                    ][self.board.black_ghost_piece[1]] = None
+                    self.board.black_ghost_piece = None
+                elif not self.turn and self.board.white_ghost_piece:
+                    self.board.board[self.board.white_ghost_piece[0]
+                                    ][self.board.white_ghost_piece[1]] = None
+                    self.board.white_ghost_piece = None
+
                 self.turn = not self.turn
                 self._update_fen()
                 return True
