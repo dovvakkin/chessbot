@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the PROJECT project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-06-19 17:51+0300\n"
+"POT-Creation-Date: 2022-06-19 18:55+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
@@ -20,39 +19,39 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.10.3\n"
 
-#: chessbot/__main__.py:59
+#: chessbot/__main__.py:60
 msgid "Покеда"
 msgstr "Покеда"
 
-#: chessbot/__main__.py:69
+#: chessbot/__main__.py:70
 msgid "Сделай свой ход"
 msgstr "Сделай свой ход"
 
-#: chessbot/__main__.py:94
+#: chessbot/__main__.py:95
 msgid "Сделай следующий ход"
 msgstr "Сделай следующий ход"
 
-#: chessbot/__main__.py:103
+#: chessbot/__main__.py:104
 msgid "Невозможный ход"
 msgstr "Невозможный ход"
 
-#: chessbot/__main__.py:113
+#: chessbot/__main__.py:114
 msgid "Куда поставить фигуру с "
 msgstr "Куда поставить фигуру с "
 
-#: chessbot/__main__.py:123
+#: chessbot/__main__.py:124
 msgid "Фигуры не выбрано"
 msgstr "Фигуры не выбрано"
 
-#: chessbot/__main__.py:134
+#: chessbot/__main__.py:135
 msgid "Не убiй!"
 msgstr "Не убiй!"
 
-#: chessbot/__main__.py:136
+#: chessbot/__main__.py:137
 msgid "Ня пока(("
 msgstr "Ня пока(("
 
-#: chessbot/__main__.py:142
+#: chessbot/__main__.py:144
 msgid "Поехали!"
 msgstr "Поехали!"
 
