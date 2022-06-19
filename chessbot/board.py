@@ -6,6 +6,8 @@ from copy import deepcopy
 from random import randint, choice
 
 initial_notation = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+#initial_notation = 'r3k2r/ppp1qppp/2np1n2/2b1pb2/4P1Q1/2NP4/PPPB1PPP/R3KBNR b KQkq - 0 4'
+#initial_notation = 'r3k2r/ppp2ppp/2nQ1nbB/8/3pq3/2N1bP2/PPP3PP/R3KBNR b KQkq - 0 5'
 storage = {}
 debug_mode = False
 

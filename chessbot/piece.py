@@ -6,7 +6,7 @@ def check_knight(color, board, pos):
 
 
 def check_diag_castle(color, board, start, to):
-    if abs(start[0] - to[0]) != abs(start[1] - to[1]):
+    if abs(start[0] - to[0]) != abs(start[1] - to[1]): 
         return False
 
     x_pos = 1 if to[0] - start[0] > 0 else -1
@@ -21,6 +21,7 @@ def check_diag_castle(color, board, start, to):
         return False
 
     while (i <= to[0] if x_pos == 1 else i >= to[0]):
+
         if exists_piece and board.board[i][j].color != color:
             if board.board[i][j].name in ['B', 'Q']:
                 return False
@@ -30,7 +31,10 @@ def check_diag_castle(color, board, start, to):
             return True
         i += x_pos
         j += y_pos
-        print(i, j)
+
+        if min(i, j) < 0 or max(i, j) > 7:
+            continue
+
         exists_piece = board.board[i][j] != None
 
     return True
@@ -70,6 +74,8 @@ def check_updown_castle(color, board, start, to):
                 return True
         if board.board[i][start[1]] != None and board.board[i][start[1]].color == color:
             return True
+
+        i += x_pos
 
     return True
 
@@ -271,6 +277,7 @@ class King(Piece):
 
             updowns = check_updown_castle(self.color, board, (0, 2), (7, 2)) and \
                 check_updown_castle(self.color, board, (0, 3), (7, 3))
+
             if not updowns:
                 return False
 
