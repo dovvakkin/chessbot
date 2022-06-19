@@ -1,6 +1,3 @@
-from lib2to3.pytree import convert
-
-from torch import nonzero
 from . import piece
 import numpy as np
 from PIL import Image
