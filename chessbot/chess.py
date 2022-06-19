@@ -1,5 +1,5 @@
-import board
-import piece
+from . import board
+from . import piece
 
 
 class Chess():

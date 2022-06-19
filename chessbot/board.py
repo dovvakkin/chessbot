@@ -1,5 +1,5 @@
 from lib2to3.pytree import convert
-import piece
+from . import piece
 import numpy as np
 from PIL import Image
 from glob import glob

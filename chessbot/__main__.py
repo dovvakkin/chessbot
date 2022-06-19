@@ -1,8 +1,8 @@
 import telebot
 from telebot import types
 import string
-import chess
-from chess import translate
+from . import chess
+from .chess import translate
 from requests import post
 
 TOKEN = "5505142382:AAEDArd2zRDlygMFYW_PJNWDsb75dZLYfNo"
