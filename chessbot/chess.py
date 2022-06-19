@@ -24,9 +24,9 @@ class Chess():
         String describing possibility of castling in FEN
     """
 
-    def __init__(self, random_mode=False):
+    def __init__(self, random_mode=False, notation = board.INITIAL_NOTATION):
         """Initialize game state."""
-        self.board = board.Board()
+        self.board = board.Board(random_mode = random_mode, notation = notation)
 
         self.turn = True
         self.turn_number = 1
