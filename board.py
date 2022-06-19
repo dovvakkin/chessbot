@@ -1,40 +1,124 @@
+from lib2to3.pytree import convert
 import piece
-from generating_board import generate_new_board, generate_random_board
+import numpy as np
+from PIL import Image
+from glob import glob
+from copy import deepcopy
+from random import randint, choice
 
-def convert_array_to_fen(arr):
+initial_notation = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+storage = {}
+debug_mode = False
+
+for i in glob("Board_images/*.png"):
+    name = i.split(".png")[0]
+    name = name.replace("\\", "/").split("/")[1]
+    storage[name] = Image.open(i)
+
+def _convert_fen_to_array(notation):
     
-    """
-    converts 8x8 array (or list of lists) to positional part of FEN notation
-    """
+    arr = np.empty((8, 8)).astype("str")
+    arr[:, :] = ""
     
-    blueprint = [] # using list because joining them such way is less memory-intensive
+    board_pt = notation.split(" ")[0]
+    board = board_pt.replace("\\", "/").split("/")
     
-    for line in arr:
-        
-        sub = []
-        
-        counter = 0
-        for i in range(8):
+    for i, line in enumerate(board):
+
+        pos = 0
+        for ch in line:
             
-            if line[i] == '':
-                counter += 1               
+            if ch.isdigit():
+                pos += int(ch)
+            
             else:
-                if counter > 0:
-                    sub.append(str(counter))
-                counter = 0
+                fig = ""
                 
-                if line[i][0] == 'b':
-                    sub.append(line[i][1].lower())
+                if ch.lower() == ch:
+                    fig = "b" + ch.upper()
                 else:
-                    sub.append(line[i][1])
-            
-        if counter > 0:
-            sub.append(str(counter))
-        
-        blueprint.append("".join(sub))
-        
-    return "/".join(blueprint)
+                    fig = "w" + ch
+                    
+                arr[i, pos] = fig
+                pos += 1
+                
+    return arr
+
+def convert_array_to_image(arr, previous_move = None):
     
+    board = deepcopy(storage['board'])
+    
+    if not previous_move is None:
+        for pos in previous_move:
+            
+            if np.sum(pos) % 2:
+                board.paste(storage['square_dark'], (28 + pos[1] * 90, 28 + pos[0] * 90), storage['square_dark'])
+            else:
+                board.paste(storage['square_light'], (28 + pos[1] * 90, 28 + pos[0] * 90), storage['square_light'])
+
+    for i, line in enumerate(arr):
+        for j, ch in enumerate(line):
+            if ch != '':
+                board.paste(storage[ch], (33 + j * 90, 33 + i * 90), storage[ch])
+            
+    return board
+
+def convert_fen_to_image(fen, previous_move = None):
+    
+    """
+    Transforms FEN notation to board image
+    
+    params:
+    fen : string
+    Chess notation
+    
+    previous_move : None or array (list) of size 2, 2 - coordinates of previous and new position of last move
+    """
+    arr = _convert_fen_to_array(fen)
+    return convert_array_to_image(arr, previous_move)
+
+def generate_new_board():
+
+    """
+    Generates board from default fen notation
+    Returns PIL.Image board object + array of figures
+    """
+
+    img = convert_fen_to_image(initial_notation)
+    arr = _convert_fen_to_array(initial_notation)
+
+    return img, arr
+
+def generate_random_board():
+
+    """
+    Generates board with random initial setup 
+    """
+
+    first_row = ['R', 'N', 'B', 'Q']
+    second_row = first_row + ['P']
+
+    arr = np.empty((8, 8)).astype(str)
+    arr[:, :] = ""
+
+    wx, bx = randint(0, 7), randint(0, 7)
+    arr[0, bx] = 'bK'
+    arr[7, wx] = 'wK'
+
+    b_first_layer = [x for x in range(8) if x != bx]
+    for pos in b_first_layer:
+        arr[0, pos] = 'b' + choice(first_row)
+
+    w_first_layer = [x for x in range(8) if x != wx]
+    for pos in w_first_layer:
+        arr[7, pos] = 'w' + choice(first_row)
+
+    for i in range(8):
+        arr[1, i] = 'b' + choice(second_row)
+        arr[6, i] = 'w' + choice(second_row)
+
+    return convert_array_to_image(arr), arr
+
 class Board():
 
     def __init__(self, random_mode = False):
@@ -44,7 +128,7 @@ class Board():
         else:
             self.board_image, self.board_array = generate_new_board()
 
-        self.board_fen = convert_array_to_fen(self.board_array)
+        self.fen = None
         self.board = []
 
         for i in range(8):
@@ -63,9 +147,9 @@ class Board():
                         self.board[i][j] = piece.Pawn(flag)
                     elif cell[1] == 'R':
                         if j == 0:
-                            self.board[i][j] = piece.Rook(flag, king_side = True)
-                        else:
                             self.board[i][j] = piece.Rook(flag, king_side = False)
+                        else:
+                            self.board[i][j] = piece.Rook(flag, king_side = True)
                     elif cell[1] == 'N':
                         self.board[i][j] = piece.Knight(flag)
                     elif cell[1] == 'B':
@@ -77,8 +161,74 @@ class Board():
 
                     else:
                         raise ImportWarning("Incorrect symbol enccountered in Board Array")
+
+    def _convert_array_to_fen(arr):
     
-    def print_board(self):
+        """
+        converts 8x8 array (or list of lists) to positional part of FEN notation
+        """
+        
+        blueprint = [] # using list because joining them such way is less memory-intensive
+        
+        for line in arr:
+            
+            sub = []
+            
+            counter = 0
+            for i in range(8):
+                
+                if line[i] == '':
+                    counter += 1               
+                else:
+                    if counter > 0:
+                        sub.append(str(counter))
+                    counter = 0
+                    
+                    if line[i][0] == 'b':
+                        sub.append(line[i][1].lower())
+                    else:
+                        sub.append(line[i][1])
+                
+            if counter > 0:
+                sub.append(str(counter))
+            
+            blueprint.append("".join(sub))
+            
+        return "/".join(blueprint)
+
+    def _update_board(self):
+
+        """
+        Updates board's array and image from self.board object
+        """
+
+        arr = np.empty((8, 8)).astype("str")
+        arr[:, :] = ""
+
+        for i, line in enumerate(self.board):
+            for j, elem in enumerate(line):
+
+                    if elem is None:
+                        continue
+
+                    if debug_mode:
+                        print(elem)
+                        print(type(elem))
+
+                    if elem.color:
+                        prefix = 'w'
+                    else:
+                        prefix = 'b'
+
+                    if elem.name == 'GP':
+                        continue
+
+                    arr[i,j] = prefix + elem.name
+
+        self.board_array = arr
+        self.board_image = convert_array_to_image(arr)
+    
+    def _print_board(self):
         buffer = ""
         for i in range(33):
             buffer += "*"
@@ -97,3 +247,26 @@ class Board():
         for i in range(33):
             buffer += "*"
         print(buffer)
+
+    def get_fen(self, side = True, castling = '-', ghost = '-', halfmove = 0, move = 1):
+
+        """
+        Generates full FEN notation. Positions obtained from inner representation.
+        
+        side: Boolean
+        True = White, False = Black
+
+        castling: String
+        Current castling possibilities
+
+        ghost: String
+        Location of ghost pawn if one exists
+
+        halfmove: Int
+        Tie Counter (number of half-moves passed from last figure taken or pawn moved)
+
+        move: Int
+        Move counter
+        """
+
+        fen_pt1 = self._convert_array_to_fen(self.board_array)
