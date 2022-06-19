@@ -14,10 +14,11 @@ admins = [414173417]
 
 def make_keyboard():
     markup = types.InlineKeyboardMarkup()
-    for number in range(8,0,-1):
+    for number in range(8, 0, -1):
         keyboard_row = []
         for letter in list(string.ascii_lowercase)[:8]:
-            keyboard_row.append(types.InlineKeyboardButton(f'{letter}{number}', callback_data=f'{letter}{number}'))
+            keyboard_row.append(types.InlineKeyboardButton(
+                f'{letter}{number}', callback_data=f'{letter}{number}'))
         markup.row(*keyboard_row)
     return markup
 
@@ -48,7 +49,7 @@ class Player:
         return self.move_start != ''
 
     def check_move_valid(self):
-        return self.chess.move(self.move_start, self.move_to) 
+        return self.chess.move(self.move_start, self.move_to)
 
 
 @bot.message_handler(commands=['stop'])
@@ -63,7 +64,8 @@ def game_start(message):
     #chessboard_url = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/AAA_SVG_Chessboard_and_chess_pieces_02.svg/1024px-AAA_SVG_Chessboard_and_chess_pieces_02.svg.png?20200505220000"
     #bot.send_photo(message.chat.id, photo=chessboard_url, caption='Сделай свой ход', reply_markup=make_keyboard())
     img = open("Current_game/initial_board.png", 'rb')
-    bot.send_photo(message.chat.id, photo = img, caption='Сделай свой ход', reply_markup=make_keyboard())
+    bot.send_photo(message.chat.id, photo=img,
+                   caption='Сделай свой ход', reply_markup=make_keyboard())
     #bot.send_message(message.chat.id, 'Сделай свой ход', reply_markup=make_keyboard())
 
 
@@ -117,7 +119,6 @@ def handle_query(call):
             current_games[chat_id].clear_accum()
 
 
-
 @bot.message_handler(commands=['kill'])
 def create_new_table(message):
     if message.from_user.id not in admins:
@@ -130,4 +131,4 @@ def create_new_table(message):
 
 if __name__ == '__main__':
     print('Поехали!')
-    bot.polling() 
+    bot.polling()
