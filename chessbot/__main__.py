@@ -5,12 +5,15 @@ import string
 from . import chess
 from .chess import translate
 from requests import post
+from . import solver
+import time
 
 TOKEN = "5505142382:AAEDArd2zRDlygMFYW_PJNWDsb75dZLYfNo"
 bot = telebot.TeleBot(TOKEN, parse_mode=None)
 
 current_games = {}
 admins = [414173417]
+stockfish_solver = solver.Solver()
 
 
 def make_keyboard():
@@ -77,7 +80,6 @@ def handle_query(call):
     if current_games[chat_id].has_prev_cell():
         current_games[chat_id].set_move_to(move)
         if current_games[chat_id].check_move_valid():
-            print(current_games[chat_id].chess.fen)
             # обрабатывать ход
             current_games[chat_id].clear_accum()
             #url = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/AAA_SVG_Chessboard_and_chess_pieces_02.svg/1024px-AAA_SVG_Chessboard_and_chess_pieces_02.svg.png?20200505220000"
@@ -91,11 +93,32 @@ def handle_query(call):
             )
             bot.edit_message_caption(
                 chat_id=call.message.chat.id,
-                caption=gettext("Сделай следующий ход"),
+                caption=gettext("Ход робота"),
                 message_id=call.message.message_id,
                 reply_markup=make_keyboard()
             )
-            current_games[chat_id].prev_state = 0
+            
+            time.sleep(5)
+            print(current_games[chat_id].chess.fen)
+            move = stockfish_solver.make_step(current_games[chat_id].chess.fen)
+            current_games[chat_id].set_move_start(move[0:2])
+            current_games[chat_id].set_move_to(move[2:4])
+            if current_games[chat_id].check_move_valid():
+                bot.edit_message_media(
+                    chat_id=call.message.chat.id,
+                    media=types.InputMediaPhoto(media=img),
+                    message_id=call.message.message_id,
+                    reply_markup=make_keyboard()
+                )
+                bot.edit_message_caption(
+                    chat_id=call.message.chat.id,
+                    caption=gettext("Сделай следующий ход"),
+                    message_id=call.message.message_id,
+                    reply_markup=make_keyboard()
+                )
+                current_games[chat_id].prev_state = 0
+            else:
+                print("KEK")
         else:
             if current_games[chat_id].prev_state != 1:
                 bot.edit_message_caption(

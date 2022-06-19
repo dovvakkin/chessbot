@@ -1,6 +1,6 @@
 from stockfish import Stockfish
 
-default_path = 'stockfish_15_win_x64_avx2\stockfish_15_x64_avx2.exe'
+default_path = 'chessbot\stockfish_15_win_x64_avx2\stockfish_15_x64_avx2.exe'
 default_parameters = {
     "Contempt": 0,
     "Min Split Depth": 0,
