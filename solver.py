@@ -1,7 +1,7 @@
 from stockfish import Stockfish
 
 default_path = 'stockfish_15_win_x64_avx2\stockfish_15_x64_avx2.exe'
-default_parameters={
+default_parameters = {
     "Contempt": 0,
     "Min Split Depth": 0,
     "Threads": 4,
@@ -16,19 +16,19 @@ default_parameters={
     "UCI_Elo": 1350
 }
 
+
 class Solver():
 
-    def __init__(self, path = None, depth = 15, params = None):
+    def __init__(self, path=None, depth=15, params=None):
 
         if path is None:
-            path = default_path 
+            path = default_path
         if params is None:
             params = default_parameters
 
-        self.solver = Stockfish(path = path, depth = depth, parameters = params)
+        self.solver = Stockfish(path=path, depth=depth, parameters=params)
 
     def make_step(self, fen):
-
         """
         Predicts best possible move for opposing team (PvE)
         """
