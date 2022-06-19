@@ -3,3 +3,4 @@ __pycache__
 *.mo
 chessbot/en/LC_MESSAGES/chessbot.mo
 chessbot/ru/LC_MESSAGES/chessbot.mo
+build
