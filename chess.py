@@ -3,13 +3,21 @@ import piece
 
 class Chess():
 
-    def __init__(self):
+    def __init__(self, random_mode = False):
         self.board = board.Board()
 
         self.turn = True
+        self.turn_number = 1
 
         self.white_ghost_piece = None
         self.black_ghost_piece = None
+
+        self.random_mode = random_mode
+        if random_mode:
+            self.castling = '-'
+        
+        else:
+            self.castling = "KQkq"
 
     def promotion(self, pos, promote):
         pawn = None
@@ -69,6 +77,11 @@ class Chess():
                 self.board.board[self.black_ghost_piece[0]][self.black_ghost_piece[1]] = None
             elif not self.turn and self.white_ghost_piece:
                 self.board.board[self.white_ghost_piece[0]][self.white_ghost_piece[1]] = None
+
+            # for FEN calculation
+            if not self.turn:
+
+                self.turn_number += 1
 
             self.turn = not self.turn
 

@@ -106,10 +106,11 @@ class Piece():
 
 
 class Rook(Piece):
-    def __init__(self, color, first_move = True):
+    def __init__(self, color, first_move = True, king_side = True):
         super().__init__(color)
         self.name = "R"
         self.first_move = first_move 
+        self.king_side = king_side
 
     def is_valid_move(self, board, start, to):
         if start[0] == to[0] or start[1] == to[1]:
