@@ -19,7 +19,8 @@ for k in glob("chessbot/Board_images/*.png"):
     name = name.replace("\\", "/").split("/")[-1]
     STORAGE[name] = Image.open(k)
 
-def _convert_fen_to_array(notation):
+
+def convert_fen_to_array(notation):
     """Convert positional part of FEN notation to 8x8 array (or list of lists)."""
     arr = np.empty((8, 8)).astype("str")
     arr[:, :] = ""
@@ -83,48 +84,45 @@ def convert_fen_to_image(fen, previous_move=None):
     previous_move : None or array (list) of size 2, 2 - coordinates of
     previous and new position of last move
     """
-    arr = _convert_fen_to_array(fen)
+    arr = convert_fen_to_array(fen)
     return convert_array_to_image(arr, previous_move)
 
 
-def generate_new_board():
+def generate_new_board(notation, random_mode = False):
     """
-    Generate board from default fen notation.
-
-    Returns PIL.Image board object + array of figures
+    Generate chess board. Can either generate from FEN notation or random_state
+    Returns board image and string matrix of inner board representation.
     """
-    img = convert_fen_to_image(INITIAL_NOTATION)
-    arr = _convert_fen_to_array(INITIAL_NOTATION)
+    if random_mode:
 
-    return img, arr
+        first_row = ['R', 'N', 'B', 'Q']
+        second_row = first_row + ['P']
 
+        arr = np.empty((8, 8)).astype(str)
+        arr[:, :] = ""
 
-def generate_random_board():
-    """Generate board with random initial setup."""
-    first_row = ['R', 'N', 'B', 'Q']
-    second_row = first_row + ['P']
+        w_x, b_x = randint(0, 7), randint(0, 7)
+        arr[0, b_x] = 'bK'
+        arr[7, w_x] = 'wK'
 
-    arr = np.empty((8, 8)).astype(str)
-    arr[:, :] = ""
+        b_first_layer = [x for x in range(8) if x != b_x]
+        for pos in b_first_layer:
+            arr[0, pos] = 'b' + choice(first_row)
 
-    w_x, b_x = randint(0, 7), randint(0, 7)
-    arr[0, b_x] = 'bK'
-    arr[7, w_x] = 'wK'
+        w_first_layer = [x for x in range(8) if x != w_x]
+        for pos in w_first_layer:
+            arr[7, pos] = 'w' + choice(first_row)
 
-    b_first_layer = [x for x in range(8) if x != b_x]
-    for pos in b_first_layer:
-        arr[0, pos] = 'b' + choice(first_row)
+        for i in range(8):
+            arr[1, i] = 'b' + choice(second_row)
+            arr[6, i] = 'w' + choice(second_row)
 
-    w_first_layer = [x for x in range(8) if x != w_x]
-    for pos in w_first_layer:
-        arr[7, pos] = 'w' + choice(first_row)
+        return convert_array_to_image(arr), arr
 
-    for i in range(8):
-        arr[1, i] = 'b' + choice(second_row)
-        arr[6, i] = 'w' + choice(second_row)
-
-    return convert_array_to_image(arr), arr
-
+    else:
+        img = convert_fen_to_image(notation)
+        arr = convert_fen_to_array(notation)
+        return img, arr
 
 class Board():
     """
@@ -148,12 +146,11 @@ class Board():
         The coordinates of a black ghost piece representing a takeable pawn for en passant
     """
 
-    def __init__(self, random_mode=False):
+    def __init__(self, random_mode = False, notation = INITIAL_NOTATION):
         """Game board initialization."""
-        if random_mode:
-            self.board_image, self.board_array = generate_random_board()
-        else:
-            self.board_image, self.board_array = generate_new_board()
+        self.board_image, self.board_array = generate_new_board(notation = notation,
+                                                                random_mode = random_mode
+                                                                )
 
         self.board_image.save("chessbot/Current_game/initial_board.png")
 
@@ -180,8 +177,10 @@ class Board():
                         if j == 0:
                             self.board[i][j] = piece.Rook(
                                 flag, king_side=False)
-                        else:
+                        elif j == 7:
                             self.board[i][j] = piece.Rook(flag, king_side=True)
+                        else:
+                            self.board[i][j] = piece.Rook(flag, first_move=False, king_side=False)
                     elif cell[1] == 'N':
                         self.board[i][j] = piece.Knight(flag)
                     elif cell[1] == 'B':

@@ -74,7 +74,7 @@ def check_diag(board, start, to):
 
 def check_check(color, board, position):
     """
-    Check if King Piece is in check.
+    Calculate check position.
 
     color: Boolean
     True if White, False if Black
@@ -85,8 +85,6 @@ def check_check(color, board, position):
     position: tuple(2)
     King's position
     """
-    # 1 - check through all 8 directions:
-
     directions = [[1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1], [0, 1]]
     knight_directions = [[-2, 1], [-1, 2], [1, 2], [2, 1], [2, -1], [1, -2], [-1, -2], [-2, -1]]
 
@@ -178,7 +176,7 @@ def check_updown(board, start, to):
     """
     Check if there are no pieces along the vertical or horizontal path.
 
-    from `start` (non-inclusive) to `to` (non-inclusive).
+    From `start` (non-inclusive) to `to` (non-inclusive).
     """
     if start[0] == to[0]:
         smaller_y = start[1] if start[1] < to[1] else to[1]
