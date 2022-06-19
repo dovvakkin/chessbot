@@ -161,9 +161,9 @@ class Chess():
 
             self.turn = not self.turn
             self._update_fen()
-            return 0
-        else:
             return 1
+        else:
+            return 0
 
     def _reverse_translate(self, pos):
 
