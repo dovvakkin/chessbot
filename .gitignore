@@ -1,3 +1,5 @@
 .DS_Store
 __pycache__
 *.mo
+chessbot/en/LC_MESSAGES/chessbot.mo
+chessbot/ru/LC_MESSAGES/chessbot.mo
