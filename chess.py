@@ -166,7 +166,7 @@ class Chess():
         fen_container.append(self.turn_number)
 
         return " ".join(fen_container)
-        
+   
 def translate(s):
     try:
         row = int(s[0])

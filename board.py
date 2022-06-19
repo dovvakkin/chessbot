@@ -162,7 +162,7 @@ class Board():
                     else:
                         raise ImportWarning("Incorrect symbol enccountered in Board Array")
 
-    def _convert_array_to_fen(arr):
+    def _convert_array_to_fen(self):
     
         """
         converts 8x8 array (or list of lists) to positional part of FEN notation
@@ -170,7 +170,7 @@ class Board():
         
         blueprint = [] # using list because joining them such way is less memory-intensive
         
-        for line in arr:
+        for line in self.board_array:
             
             sub = []
             
@@ -247,26 +247,3 @@ class Board():
         for i in range(33):
             buffer += "*"
         print(buffer)
-
-    def get_fen(self, side = True, castling = '-', ghost = '-', halfmove = 0, move = 1):
-
-        """
-        Generates full FEN notation. Positions obtained from inner representation.
-        
-        side: Boolean
-        True = White, False = Black
-
-        castling: String
-        Current castling possibilities
-
-        ghost: String
-        Location of ghost pawn if one exists
-
-        halfmove: Int
-        Tie Counter (number of half-moves passed from last figure taken or pawn moved)
-
-        move: Int
-        Move counter
-        """
-
-        fen_pt1 = self._convert_array_to_fen(self.board_array)
