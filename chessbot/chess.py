@@ -144,7 +144,7 @@ class Chess():
                         self.board.black_ghost_piece = None
                     else:
                         self.board.board[self.board.white_ghost_piece[0] -
-                                         1][self.board.black_ghost_piece[1]] = None
+                                         1][self.board.white_ghost_piece[1]] = None
                         self.board.white_ghost_piece = None
                 if self.board.board[to[0]][to[1]].name == 'K':
                     return -1
