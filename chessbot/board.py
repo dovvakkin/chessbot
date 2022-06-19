@@ -15,6 +15,9 @@ for i in glob("chessbot/Board_images/*.png"):
     storage[name] = Image.open(i)
 
 def _convert_fen_to_array(notation):
+    """
+    converts positional part of FEN notation to 8x8 array (or list of lists)
+    """
 
     arr = np.empty((8, 8)).astype("str")
     arr[:, :] = ""
@@ -45,6 +48,9 @@ def _convert_fen_to_array(notation):
 
 
 def convert_array_to_image(arr, previous_move=None):
+    """
+    converts 8x8 array (or list of lists) to image representing it
+    """
 
     board = deepcopy(storage['board'])
 
@@ -124,7 +130,25 @@ def generate_random_board():
 
 
 class Board():
-
+    """
+    A class to represent a chess board.
+    ...
+    Attributes:
+    -----------
+    board : list[list[Piece]]
+        represents a chess board
+        
+    turn : bool
+        True if white's turn
+    board_image : Image
+        PIL Image of the board
+    board_array : list[list[Piece]]
+        chess board in specific array for image and FEN
+    white_ghost_piece : tup
+        The coordinates of a white ghost piece representing a takeable pawn for en passant
+    black_ghost_piece : tup
+        The coordinates of a black ghost piece representing a takeable pawn for en passant
+    """
     def __init__(self, random_mode=False):
 
         if random_mode:
@@ -236,23 +260,3 @@ class Board():
         self.board_array = arr
         self.board_image = convert_array_to_image(arr)
         self.board_image.save("chessbot/Current_game/board.png")
-
-    def _print_board(self):
-        buffer = ""
-        for i in range(33):
-            buffer += "*"
-        print(buffer)
-        for i in range(len(self.board)):
-            tmp_str = "|"
-            for j in self.board[i]:
-                if j == None or j.name == 'GP':
-                    tmp_str += "   |"
-                elif len(j.name) == 2:
-                    tmp_str += (" " + str(j) + "|")
-                else:
-                    tmp_str += (" " + str(j) + " |")
-            print(tmp_str)
-        buffer = ""
-        for i in range(33):
-            buffer += "*"
-        print(buffer)

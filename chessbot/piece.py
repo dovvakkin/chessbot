@@ -1,4 +1,8 @@
 def check_knight(color, board, pos):
+    """
+    Check if there is a knight of the opposite `color` at
+    position `pos` on board `board`.
+    """
     piece = board.board[pos[0]][pos[1]]
     if piece != None and piece.color != color and piece.name == 'N':
         return False
@@ -6,6 +10,10 @@ def check_knight(color, board, pos):
 
 
 def check_diag_castle(color, board, start, to):
+    """
+    Checks the diagonal path from `start` (non-inclusive) to `to` (inclusive)
+    on board `board` for any threats from the opposite `color`
+    """
     if abs(start[0] - to[0]) != abs(start[1] - to[1]):
         return False
 
@@ -30,13 +38,16 @@ def check_diag_castle(color, board, start, to):
             return True
         i += x_pos
         j += y_pos
-        print(i, j)
         exists_piece = board.board[i][j] != None
 
     return True
 
 
 def check_diag(board, start, to):
+    """
+    Checks if there are no pieces along the diagonal path from
+    `start` (non-inclusive) to `to` (non-inclusive). 
+    """
     if abs(start[0] - to[0]) != abs(start[1] - to[1]):
         return False
 
@@ -54,6 +65,10 @@ def check_diag(board, start, to):
 
 
 def check_updown_castle(color, board, start, to):
+    """
+    Checks if there are any threats from the opposite `color` from `start` (non-inclusive)
+    to `to` (inclusive) on board `board`.
+    """
 
     x_pos = 1 if to[0] - start[0] > 0 else -1
     i = start[0] + x_pos
@@ -75,6 +90,10 @@ def check_updown_castle(color, board, start, to):
 
 
 def check_updown(board, start, to):
+    """
+    Checks if there are no pieces along the vertical or horizontal path
+    from `start` (non-inclusive) to `to` (non-inclusive). 
+    """
     if start[0] == to[0]:
         smaller_y = start[1] if start[1] < to[1] else to[1]
         bigger_y = start[1] if start[1] > to[1] else to[1]
@@ -94,6 +113,22 @@ def check_updown(board, start, to):
 
 
 class Piece():
+    """
+    A class to represent a piece in chess
+    ...
+    Attributes:
+    -----------
+    name : str
+        Represents the name of a piece as following - 
+        Pawn -> P
+        Rook -> R
+        Knight -> N
+        Bishop -> B
+        Queen -> Q
+        King -> K
+    color : bool
+        True if piece is white
+    """
     def __init__(self, color):
         self.name = ""
         self.color = color
@@ -161,6 +196,9 @@ class King(Piece):
         self.first_move = first_move
 
     def can_castle(self, board, start, to, right):
+        """
+        Returns True if king at `start` can move to `to` on `board` for castling.
+        """
         if self.color and right:
             knight_attack = check_knight(self.color, board, (6, 3)) and \
                 check_knight(self.color, board, (6, 4)) and \
