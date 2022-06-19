@@ -1,6 +1,11 @@
 [MASTER]
 additional-builtins=_
 [MESSAGE_CONTROL]
+good-names=
+    i,
+    j,
+    to
 disable=
+    too-many-nested-blocks,
     too-few-public-methods,
     too-many-branches

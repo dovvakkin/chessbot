@@ -1,20 +1,19 @@
+"""Module with pieces movement logic."""
 from copy import deepcopy
 
 def check_knight(color, board, pos):
-    """
-    Check if there is a knight of the opposite `color` at
-    position `pos` on board `board`.
-    """
+    """Check if there is a knight of the opposite `color` at position `pos` on board `board`."""
     piece = board.board[pos[0]][pos[1]]
-    if piece != None and piece.color != color and piece.name == 'N':
+    if piece is not None and piece.color != color and piece.name == 'N':
         return False
     return True
 
 
 def check_diag_castle(color, board, start, to):
     """
-    Checks the diagonal path from `start` (non-inclusive) to `to` (inclusive)
-    on board `board` for any threats from the opposite `color`
+    Check the diagonal path from `start` (non-inclusive) to `to` (inclusive) on board `board`.
+
+    For any threats from the opposite `color`.
     """
     if abs(start[0] - to[0]) != abs(start[1] - to[1]):
         return False
@@ -25,8 +24,8 @@ def check_diag_castle(color, board, start, to):
     i = start[0] + x_pos
     j = start[1] + y_pos
 
-    exists_piece = board.board[i][j] != None
-    if exists_piece and (board.board[i][j].name == 'P' or board.board[i][j].name == 'K') and \
+    exists_piece = board.board[i][j] is not None
+    if exists_piece and (board.board[i][j].name in ('P', 'K')) and \
             board.board[i][j].color != color:
         return False
 
@@ -35,25 +34,27 @@ def check_diag_castle(color, board, start, to):
         if exists_piece and board.board[i][j].color != color:
             if board.board[i][j].name in ['B', 'Q']:
                 return False
-            else:
-                return True
+            return True
+
         if exists_piece and board.board[i][j].color == color:
             return True
+
         i += x_pos
         j += y_pos
 
         if min(i, j) < 0 or max(i, j) > 7:
             continue
 
-        exists_piece = board.board[i][j] != None
+        exists_piece = board.board[i][j] is not None
 
     return True
 
 
 def check_diag(board, start, to):
     """
-    Checks if there are no pieces along the diagonal path from
-    `start` (non-inclusive) to `to` (non-inclusive). 
+    Check if there are no pieces along the diagonal.
+
+    Path from `start` (non-inclusive) to `to` (non-inclusive).
     """
     if abs(start[0] - to[0]) != abs(start[1] - to[1]):
         return False
@@ -64,7 +65,7 @@ def check_diag(board, start, to):
     i = start[0] + x_pos
     j = start[1] + y_pos
     while (i < to[0] if x_pos == 1 else i > to[0]):
-        if board.board[i][j] != None:
+        if board.board[i][j] is not None:
             return False
         i += x_pos
         j += y_pos
@@ -72,8 +73,9 @@ def check_diag(board, start, to):
 
 
 def check_check(color, board, position):
-    
     """
+    Check if King Piece is in check.
+
     color: Boolean
     True if White, False if Black
 
@@ -82,10 +84,7 @@ def check_check(color, board, position):
 
     position: tuple(2)
     King's position
-
-    Checks if King Piece is in check.
     """
-
     # 1 - check through all 8 directions:
 
     directions = [[1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1], [0, 1]]
@@ -94,12 +93,12 @@ def check_check(color, board, position):
     for direction in knight_directions:
         # checking for Horse
 
-        x, y = direction[0] + position[0], direction[1] + position[1]
+        x_coord, y_coord = direction[0] + position[0], direction[1] + position[1]
 
-        if min(x, y) < 0 or max(x, y) > 7:
+        if min(x_coord, y_coord) < 0 or max(x_coord, y_coord) > 7:
             continue
 
-        if ~check_knight(color, board, (x, y)):
+        if ~check_knight(color, board, (x_coord, y_coord)):
             return True
 
     for direction in directions:
@@ -116,17 +115,17 @@ def check_check(color, board, position):
             if min(i, j) < 0 or max(i, j) > 7:
                 break
 
-            if board.board[i][j] == None:
+            if board.board[i][j] is None:
                 continue
             # при проверке соседних клеток хотим игнорировать самого короля
-            if board.board[i][j].name == 'K' and board.board[i][j].color == color: 
+            if board.board[i][j].name == 'K' and board.board[i][j].color == color:
                 continue
 
             if board.board[i][j].color == color:
-                    break
+                break
 
             if abs(direction[0]) + abs(direction[1]) == 2: #diag
-                
+
                 if first_step:
                     first_step = False
 
@@ -151,24 +150,24 @@ def check_check(color, board, position):
 
 def check_updown_castle(color, board, start, to):
     """
-    Checks if there are any threats from the opposite `color` from `start` (non-inclusive)
-    to `to` (inclusive) on board `board`.
-    """
+    Check if there are any threats from the opposite.
 
+    `color` from `start` (non-inclusive) to `to` (inclusive) on board `board`.
+    """
     x_pos = 1 if to[0] - start[0] > 0 else -1
     i = start[0] + x_pos
 
     front_piece = board.board[i][start[1]]
-    if front_piece != None and front_piece.name == 'K' and front_piece.color != color:
+    if front_piece is not None and front_piece.name == 'K' and front_piece.color != color:
         return False
 
     while (i <= to[0] if x_pos == 1 else i >= to[0]):
-        if board.board[i][start[1]] != None and board.board[i][start[1]].color != color:
+        if board.board[i][start[1]] is not None and board.board[i][start[1]].color != color:
             if board.board[i][start[1]].name in ['R', 'Q']:
                 return False
-            else:
-                return True
-        if board.board[i][start[1]] != None and board.board[i][start[1]].color == color:
+            return True
+
+        if board.board[i][start[1]] is not None and board.board[i][start[1]].color == color:
             return True
 
         i += x_pos
@@ -177,35 +176,37 @@ def check_updown_castle(color, board, start, to):
 
 def check_updown(board, start, to):
     """
-    Checks if there are no pieces along the vertical or horizontal path
-    from `start` (non-inclusive) to `to` (non-inclusive). 
+    Check if there are no pieces along the vertical or horizontal path.
+
+    from `start` (non-inclusive) to `to` (non-inclusive).
     """
     if start[0] == to[0]:
         smaller_y = start[1] if start[1] < to[1] else to[1]
         bigger_y = start[1] if start[1] > to[1] else to[1]
 
         for i in range(smaller_y + 1, bigger_y):
-            if board.board[start[0]][i] != None:
+            if board.board[start[0]][i] is not None:
                 return False
         return True
-    else:
-        smaller_x = start[0] if start[0] < to[0] else to[0]
-        bigger_x = start[0] if start[0] > to[0] else to[0]
 
-        for i in range(smaller_x + 1, bigger_x):
-            if board.board[i][start[1]] != None:
-                return False
-        return True
+    smaller_x = start[0] if start[0] < to[0] else to[0]
+    bigger_x = start[0] if start[0] > to[0] else to[0]
+
+    for i in range(smaller_x + 1, bigger_x):
+        if board.board[i][start[1]] is not None:
+            return False
+    return True
 
 
 class Piece():
     """
-    A class to represent a piece in chess
+    A class to represent a piece in chess.
+
     ...
     Attributes:
     -----------
     name : str
-        Represents the name of a piece as following - 
+        Represents the name of a piece as following -
         Pawn -> P
         Rook -> R
         Knight -> N
@@ -215,38 +216,47 @@ class Piece():
     color : bool
         True if piece is white
     """
+
     def __init__(self, color):
+        """Init piece name and color."""
         self.name = ""
         self.color = color
 
-    def is_valid_move(self, board, start, to):
-        """Checks if proposed move is valid."""
+    def is_valid_move(self, board, start, to): # pylint: disable=unused-argument
+        """Check if proposed move is valid."""
         return False
 
     def is_white(self):
-        """Returns color of piece"""
+        """Return color of piece."""
         return self.color
 
 class Rook(Piece):
+    """Rook piece."""
+
     def __init__(self, color, first_move=True, king_side=True):
+        """Init piece name, color and first move."""
         super().__init__(color)
         self.name = "R"
         self.first_move = first_move
         self.king_side = king_side
 
     def is_valid_move(self, board, start, to):
-        """Checks if proposed move is valid."""
+        """Check if proposed move is valid."""
         if start[0] == to[0] or start[1] == to[1]:
             return check_updown(board, start, to)
         return False
 
 
 class Knight(Piece):
+    """Knight piece."""
+
     def __init__(self, color):
+        """Init piece name and color."""
         super().__init__(color)
         self.name = "N"
 
-    def is_valid_move(self, board, start, to):
+    def is_valid_move(self, board, start, to): # pylint: disable=unused-argument
+        """Check if proposed move is valid."""
         if abs(start[0] - to[0]) == 2 and abs(start[1] - to[1]) == 1:
             return True
         if abs(start[0] - to[0]) == 1 and abs(start[1] - to[1]) == 2:
@@ -255,38 +265,48 @@ class Knight(Piece):
 
 
 class Bishop(Piece):
+    """Bishop piece."""
+
     def __init__(self, color):
+        """Init piece name and color."""
         super().__init__(color)
         self.name = "B"
 
     def is_valid_move(self, board, start, to):
+        """Check if proposed move is valid."""
         return check_diag(board, start, to)
 
 
 class Queen(Piece):
+    """Queen piece."""
+
     def __init__(self, color):
+        """Init piece name and color."""
         super().__init__(color)
         self.name = "Q"
 
     def is_valid_move(self, board, start, to):
+        """Check if proposed move is valid."""
         if abs(start[0] - to[0]) == abs(start[1] - to[1]):
             return check_diag(board, start, to)
 
-        elif start[0] == to[0] or start[1] == to[1]:
+        if start[0] == to[0] or start[1] == to[1]:
             return check_updown(board, start, to)
+
         return False
 
 
 class King(Piece):
+    """King piece."""
+
     def __init__(self, color, first_move=True):
+        """Init piece name and color."""
         super().__init__(color)
         self.name = "K"
         self.first_move = first_move
 
-    def can_castle(self, board, start, to, right):
-        """
-        Returns True if king at `start` can move to `to` on `board` for castling.
-        """
+    def can_castle(self, board, start, to, right): # pylint: disable=too-many-return-statements, inconsistent-return-statements
+        """Return True if king at `start` can move to `to` on `board` for castling."""
         if self.color and right:
             knight_attack = check_knight(self.color, board, (6, 3)) and \
                 check_knight(self.color, board, (6, 4)) and \
@@ -409,6 +429,7 @@ class King(Piece):
             return True
 
     def is_valid_move(self, board, start, to):
+        """Check if proposed move is valid."""
         if self.first_move and abs(start[1] - to[1]) == 2 and start[0] - to[0] == 0:
             return self.can_castle(board, start, to, to[1] - start[1] > 0)
 
@@ -421,24 +442,32 @@ class King(Piece):
 
 
 class GhostPawn(Piece):
+    """Ghost pawn for en passant."""
+
     def __init__(self, color):
+        """Init piece name and color."""
         super().__init__(color)
         self.name = "GP"
 
     def is_valid_move(self, board, start, to):
+        """Check if proposed move is valid."""
         return False
 
 
 class Pawn(Piece):
+    """Pawn piece."""
+
     def __init__(self, color):
+        """Init piece name, color and first move."""
         super().__init__(color)
         self.name = "P"
         self.first_move = True
 
-    def is_valid_move(self, board, start, to):
+    def is_valid_move(self, board, start, to): #pylint: disable=too-many-return-statements
+        """Check if proposed move is valid."""
         if self.color:
             if start[0] == to[0] + 1 and (start[1] == to[1] + 1 or start[1] == to[1] - 1):
-                if board.board[to[0]][to[1]] != None:
+                if board.board[to[0]][to[1]] is not None:
                     self.first_move = False
                     return True
                 return False
@@ -446,7 +475,7 @@ class Pawn(Piece):
             if start[1] == to[1]:
                 if (start[0] - to[0] == 2 and self.first_move) or (start[0] - to[0] == 1):
                     for i in range(start[0] - 1, to[0] - 1, -1):
-                        if board.board[i][start[1]] != None:
+                        if board.board[i][start[1]] is not None:
                             return False
                     if start[0] - to[0] == 2:
                         board.board[start[0] - 1][start[1]
@@ -457,23 +486,22 @@ class Pawn(Piece):
                 return False
             return False
 
-        else:
-            if start[0] == to[0] - 1 and (start[1] == to[1] - 1 or start[1] == to[1] + 1):
-                if board.board[to[0]][to[1]] != None:
-                    self.first_move = False
-                    return True
-                return False
-            if start[1] == to[1]:
-                if (to[0] - start[0] == 2 and self.first_move) or (to[0] - start[0] == 1):
-                    for i in range(start[0] + 1, to[0] + 1):
-                        if board.board[i][start[1]] != None:
-                            return False
-                    # insert a GhostPawn
-                    if to[0] - start[0] == 2:
-                        board.board[start[0] + 1][start[1]
-                                                  ] = GhostPawn(self.color)
-                        board.black_ghost_piece = (start[0] + 1, start[1])
-                    self.first_move = False
-                    return True
-                return False
+        if start[0] == to[0] - 1 and (start[1] == to[1] - 1 or start[1] == to[1] + 1):
+            if board.board[to[0]][to[1]] is not None:
+                self.first_move = False
+                return True
             return False
+        if start[1] == to[1]:
+            if (to[0] - start[0] == 2 and self.first_move) or (to[0] - start[0] == 1):
+                for i in range(start[0] + 1, to[0] + 1):
+                    if board.board[i][start[1]] is not None:
+                        return False
+                # insert a GhostPawn
+                if to[0] - start[0] == 2:
+                    board.board[start[0] + 1][start[1]
+                                              ] = GhostPawn(self.color)
+                    board.black_ghost_piece = (start[0] + 1, start[1])
+                self.first_move = False
+                return True
+            return False
+        return False
