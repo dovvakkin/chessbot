@@ -227,6 +227,7 @@ class Board():
 
         self.board_array = arr
         self.board_image = convert_array_to_image(arr)
+        self.board_image.save("Current_game/board.png")
     
     def _print_board(self):
         buffer = ""

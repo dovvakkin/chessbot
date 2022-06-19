@@ -59,7 +59,8 @@ def game_start(message):
 @bot.message_handler(commands=['start'])
 def game_start(message):
     current_games[message.chat.id] = Player()
-    chessboard_url = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/AAA_SVG_Chessboard_and_chess_pieces_02.svg/1024px-AAA_SVG_Chessboard_and_chess_pieces_02.svg.png?20200505220000"
+    #chessboard_url = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/AAA_SVG_Chessboard_and_chess_pieces_02.svg/1024px-AAA_SVG_Chessboard_and_chess_pieces_02.svg.png?20200505220000"
+    chessboard_url = "Current_game/board.png"
     bot.send_photo(message.chat.id, photo=chessboard_url, caption='Сделай свой ход', reply_markup=make_keyboard())
     #bot.send_message(message.chat.id, 'Сделай свой ход', reply_markup=make_keyboard())
 
@@ -73,7 +74,8 @@ def handle_query(call):
         if current_games[chat_id].check_move_valid():
             # обрабатывать ход
             current_games[chat_id].clear_accum()
-            url = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/AAA_SVG_Chessboard_and_chess_pieces_02.svg/1024px-AAA_SVG_Chessboard_and_chess_pieces_02.svg.png?20200505220000"
+            #url = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/AAA_SVG_Chessboard_and_chess_pieces_02.svg/1024px-AAA_SVG_Chessboard_and_chess_pieces_02.svg.png?20200505220000"
+            url = "Current_game/board.png"
             bot.edit_message_media(
                 chat_id=call.message.chat.id,
                 media=types.InputMediaPhoto(media=url),
