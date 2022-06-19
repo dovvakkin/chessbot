@@ -19,6 +19,7 @@ def test_fen_to_array():
     conversion = convert_fen_to_array(fen)
     assert np.all(arr == conversion)
 
+
 def test_board_generation():
     """Test if array -> FEN (partial) is valid."""
     fen = 'r1b1k3/ppppp3/8/2b3q1/R6r/4N3/PQPPPPPP/4K2R w KQkq - 0 1'
