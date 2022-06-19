@@ -6,7 +6,7 @@ def check_knight(color, board, pos):
     position `pos` on board `board`.
     """
     piece = board.board[pos[0]][pos[1]]
-    if piece != None and piece.color != color and piece.name == 'N':
+    if piece is not None and piece.color != color and piece.name == 'N':
         return False
     return True
 
@@ -25,7 +25,7 @@ def check_diag_castle(color, board, start, to):
     i = start[0] + x_pos
     j = start[1] + y_pos
 
-    exists_piece = board.board[i][j] != None
+    exists_piece = board.board[i][j] is not None
     if exists_piece and (board.board[i][j].name == 'P' or board.board[i][j].name == 'K') and \
             board.board[i][j].color != color:
         return False
@@ -45,7 +45,7 @@ def check_diag_castle(color, board, start, to):
         if min(i, j) < 0 or max(i, j) > 7:
             continue
 
-        exists_piece = board.board[i][j] != None
+        exists_piece = board.board[i][j] is not None
 
     return True
 
@@ -53,7 +53,7 @@ def check_diag_castle(color, board, start, to):
 def check_diag(board, start, to):
     """
     Checks if there are no pieces along the diagonal path from
-    `start` (non-inclusive) to `to` (non-inclusive). 
+    `start` (non-inclusive) to `to` (non-inclusive).
     """
     if abs(start[0] - to[0]) != abs(start[1] - to[1]):
         return False
@@ -64,7 +64,7 @@ def check_diag(board, start, to):
     i = start[0] + x_pos
     j = start[1] + y_pos
     while (i < to[0] if x_pos == 1 else i > to[0]):
-        if board.board[i][j] != None:
+        if board.board[i][j] is not None:
             return False
         i += x_pos
         j += y_pos
@@ -72,8 +72,9 @@ def check_diag(board, start, to):
 
 
 def check_check(color, board, position):
-    
     """
+    Function to calculate check position.
+
     color: Boolean
     True if White, False if Black
 
@@ -85,9 +86,6 @@ def check_check(color, board, position):
 
     Checks if King Piece is in check.
     """
-
-    # 1 - check through all 8 directions:
-
     directions = [[1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1], [0, 1]]
     knight_directions = [[-2, 1], [-1, 2], [1, 2], [2, 1], [2, -1], [1, -2], [-1, -2], [-2, -1]]
 
@@ -116,7 +114,7 @@ def check_check(color, board, position):
             if min(i, j) < 0 or max(i, j) > 7:
                 break
 
-            if board.board[i][j] == None:
+            if board.board[i][j] is None:
                 continue
             # при проверке соседних клеток хотим игнорировать самого короля
             if board.board[i][j].name == 'K' and board.board[i][j].color == color: 
@@ -159,16 +157,16 @@ def check_updown_castle(color, board, start, to):
     i = start[0] + x_pos
 
     front_piece = board.board[i][start[1]]
-    if front_piece != None and front_piece.name == 'K' and front_piece.color != color:
+    if front_piece is not None and front_piece.name == 'K' and front_piece.color != color:
         return False
 
     while (i <= to[0] if x_pos == 1 else i >= to[0]):
-        if board.board[i][start[1]] != None and board.board[i][start[1]].color != color:
+        if board.board[i][start[1]] is not None and board.board[i][start[1]].color != color:
             if board.board[i][start[1]].name in ['R', 'Q']:
                 return False
             else:
                 return True
-        if board.board[i][start[1]] != None and board.board[i][start[1]].color == color:
+        if board.board[i][start[1]] is not None and board.board[i][start[1]].color == color:
             return True
 
         i += x_pos
@@ -185,7 +183,7 @@ def check_updown(board, start, to):
         bigger_y = start[1] if start[1] > to[1] else to[1]
 
         for i in range(smaller_y + 1, bigger_y):
-            if board.board[start[0]][i] != None:
+            if board.board[start[0]][i] is not None:
                 return False
         return True
     else:
@@ -193,7 +191,7 @@ def check_updown(board, start, to):
         bigger_x = start[0] if start[0] > to[0] else to[0]
 
         for i in range(smaller_x + 1, bigger_x):
-            if board.board[i][start[1]] != None:
+            if board.board[i][start[1]] is not None:
                 return False
         return True
 
