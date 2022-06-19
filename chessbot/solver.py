@@ -44,7 +44,7 @@ class Solver():
         """
 
         if not self.solver.is_fen_valid(fen):
-            raise ValueError("Incorrect FEN notation")
+            return None
 
         self.solver.set_fen_position(fen)
         return self.solver.get_best_move()

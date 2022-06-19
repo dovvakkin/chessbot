@@ -61,17 +61,17 @@ class Chess():
         """
 
         if self.board.board[start[0]][start[1]] == None:
-            return False
+            return 0
 
         target_piece = self.board.board[start[0]][start[1]]
         if self.turn != target_piece.color:
-            return False
+            return 0
 
         end_piece = self.board.board[to[0]][to[1]]
         is_end_piece = end_piece != None
 
         if is_end_piece and self.board.board[start[0]][start[1]].color == end_piece.color:
-            return False
+            return 0
 
         if target_piece.is_valid_move(self.board, start, to):
 
@@ -111,7 +111,7 @@ class Chess():
                                      ][self.board.white_ghost_piece[1]] = None
                 self.turn = not self.turn
                 self._update_fen()
-                return True
+                return 1
 
             if target_piece.name == 'P' and (to[0] == 0 or to[0] == 7):
                 self.board.board[to[0]][to[1]] = piece.Queen(self.turn)
@@ -128,7 +128,7 @@ class Chess():
 
                 self.turn = not self.turn
                 self._update_fen()
-                return True
+                return 1
 
             if self.board.board[to[0]][to[1]]:
                 if self.board.board[to[0]][to[1]].name == "GP":
@@ -143,6 +143,9 @@ class Chess():
                         self.board.board[self.board.white_ghost_piece[0] -
                                          1][self.board.black_ghost_piece[1]] = None
                         self.board.white_ghost_piece = None
+                if self.board.board[to[0]][to[1]].name == 'K':
+                    return -1
+                    
 
             self.board.board[to[0]][to[1]] = target_piece
             self.board.board[start[0]][start[1]] = None
@@ -158,9 +161,9 @@ class Chess():
 
             self.turn = not self.turn
             self._update_fen()
-            return True
+            return 0
         else:
-            return False
+            return 1
 
     def _reverse_translate(self, pos):
 
