@@ -83,7 +83,7 @@ def check_check(color, board, position):
     position: tuple(2)
     King's position
 
-    Checking if King Piece is in check.
+    Checks if King Piece is in check.
     """
 
     # 1 - check through all 8 directions:
@@ -220,11 +220,12 @@ class Piece():
         self.color = color
 
     def is_valid_move(self, board, start, to):
+        """Checks if proposed move is valid."""
         return False
 
     def is_white(self):
+        """Returns color of piece"""
         return self.color
-
 
 class Rook(Piece):
     def __init__(self, color, first_move=True, king_side=True):
@@ -234,6 +235,7 @@ class Rook(Piece):
         self.king_side = king_side
 
     def is_valid_move(self, board, start, to):
+        """Checks if proposed move is valid."""
         if start[0] == to[0] or start[1] == to[1]:
             return check_updown(board, start, to)
         return False
