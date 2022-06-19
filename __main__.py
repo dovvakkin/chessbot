@@ -3,6 +3,7 @@ from telebot import types
 import string
 import chess
 from chess import translate
+from requests import post
 
 TOKEN = "5505142382:AAEDArd2zRDlygMFYW_PJNWDsb75dZLYfNo"
 bot = telebot.TeleBot(TOKEN, parse_mode=None)
@@ -60,8 +61,9 @@ def game_start(message):
 def game_start(message):
     current_games[message.chat.id] = Player()
     #chessboard_url = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/AAA_SVG_Chessboard_and_chess_pieces_02.svg/1024px-AAA_SVG_Chessboard_and_chess_pieces_02.svg.png?20200505220000"
-    chessboard_url = "Current_game/board.png"
-    bot.send_photo(message.chat.id, photo=chessboard_url, caption='Сделай свой ход', reply_markup=make_keyboard())
+    #bot.send_photo(message.chat.id, photo=chessboard_url, caption='Сделай свой ход', reply_markup=make_keyboard())
+    img = open("Current_game/initial_board.png", 'rb')
+    bot.send_photo(message.chat.id, photo = img, caption='Сделай свой ход', reply_markup=make_keyboard())
     #bot.send_message(message.chat.id, 'Сделай свой ход', reply_markup=make_keyboard())
 
 
@@ -75,10 +77,10 @@ def handle_query(call):
             # обрабатывать ход
             current_games[chat_id].clear_accum()
             #url = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/AAA_SVG_Chessboard_and_chess_pieces_02.svg/1024px-AAA_SVG_Chessboard_and_chess_pieces_02.svg.png?20200505220000"
-            url = "Current_game/board.png"
+            img = open("Current_game/board.png")
             bot.edit_message_media(
                 chat_id=call.message.chat.id,
-                media=types.InputMediaPhoto(media=url),
+                media=types.InputMediaPhoto(media=img),
                 message_id=call.message.message_id,
                 reply_markup=make_keyboard()
             )

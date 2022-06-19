@@ -128,6 +128,8 @@ class Board():
         else:
             self.board_image, self.board_array = generate_new_board()
 
+        self.board_image.save("Current_game/initial_board.png")
+
         self.fen = None
         self.board = []
 
