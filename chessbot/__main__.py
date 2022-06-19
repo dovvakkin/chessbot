@@ -105,6 +105,7 @@ def handle_query(call):
             current_games[chat_id].set_move_to(move[2:4])
 
             if current_games[chat_id].check_move_valid():
+                current_games[chat_id].clear_accum()
                 img = open("chessbot/Current_game/board.png", 'rb')
                 bot.edit_message_media(
                     chat_id=call.message.chat.id,
