@@ -1,11 +1,12 @@
+"""Module for chess logic representation."""
 from . import board
 from . import piece
 
 
 class Chess():
     """
-    A class to represent the game of chess.
-    
+    Class to represent the game of chess.
+
     ...
     Attributes:
     -----------
@@ -24,6 +25,7 @@ class Chess():
     """
 
     def __init__(self, random_mode=False):
+        """Initialize game state."""
         self.board = board.Board()
 
         self.turn = True
@@ -40,7 +42,8 @@ class Chess():
         self.fen = self._update_fen()
 
     def has_piece_under(self, start):
-        if self.board.board[start[0]][start[1]] == None:
+        """Return True if there is piece on given coord."""
+        if self.board.board[start[0]][start[1]] is None:
             return False
         if self.board.board[start[0]][start[1]].name == "GP":
             return False
@@ -48,7 +51,8 @@ class Chess():
 
     def move(self, start, to):
         """
-        Moves a piece at `start` to `to`. 
+        Move a piece at `start` to `to`.
+
         Does nothing if there is no piece at the starting point.
         Does nothing if the piece at `start` belongs to the wrong color for the current turn.
         Does nothing if moving the piece from `start` to `to` is not a valid move.
@@ -56,11 +60,10 @@ class Chess():
             Position of a piece to be moved
         to : tup
             Position of where the piece is to be moved
-        
+
         precondition: `start` and `to` are valid positions on the board
         """
-
-        if self.board.board[start[0]][start[1]] == None:
+        if self.board.board[start[0]][start[1]] is None:
             return 0
 
         target_piece = self.board.board[start[0]][start[1]]
@@ -68,7 +71,7 @@ class Chess():
             return 0
 
         end_piece = self.board.board[to[0]][to[1]]
-        is_end_piece = end_piece != None
+        is_end_piece = end_piece is not None
 
         if is_end_piece and self.board.board[start[0]][start[1]].color == end_piece.color:
             return 0
@@ -116,7 +119,7 @@ class Chess():
             if target_piece.name == 'P' and (to[0] == 0 or to[0] == 7):
                 self.board.board[to[0]][to[1]] = piece.Queen(self.turn)
                 self.board.board[start[0]][start[1]] = None
-                
+
                 if self.turn and self.board.black_ghost_piece:
                     self.board.board[self.board.black_ghost_piece[0]
                                     ][self.board.black_ghost_piece[1]] = None
@@ -145,7 +148,7 @@ class Chess():
                         self.board.white_ghost_piece = None
                 if self.board.board[to[0]][to[1]].name == 'K':
                     return -1
-                    
+
 
             self.board.board[to[0]][to[1]] = target_piece
             self.board.board[start[0]][start[1]] = None
@@ -166,23 +169,14 @@ class Chess():
             return 1
 
     def _reverse_translate(self, pos):
-
-        """
-        Translates coordinates to literal positions 
-        """
-
-
+        """Translate coordinates to literal positions."""
         dictionary = {0: 'a', 1: 'b', 2: 'c',
                       3: 'd', 4: 'e', 5: 'f', 6: 'g', 7: 'h'}
 
         return dictionary[pos[1]] + str(8 - pos[0])
 
     def _update_fen(self):
-
-        """
-        Generates full FEN notation from inner representation of game
-        """
-
+        """Generate full FEN notation from inner representation of game."""
         # 0 - update iternal array and image of board:
         self.board._update_board()
 
@@ -220,14 +214,11 @@ class Chess():
 
         return self.fen
 
-def translate(s):
-
-    """
-    Translates literal positions to coordinates 
-    """
+def translate(literal_pos):
+    """Translate literal positions to coordinates."""
     try:
-        row = int(s[1])
-        col = s[0]
+        row = int(literal_pos[1])
+        col = literal_pos[0]
         if row < 1 or row > 8:
             return None
         if col < 'a' or col > 'h':
@@ -235,5 +226,5 @@ def translate(s):
         dictionary = {'a': 0, 'b': 1, 'c': 2,
                       'd': 3, 'e': 4, 'f': 5, 'g': 6, 'h': 7}
         return (8 - row, dictionary[col])
-    except:
+    except KeyError:
         return None
