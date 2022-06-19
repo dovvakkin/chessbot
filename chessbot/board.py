@@ -1,4 +1,6 @@
 from lib2to3.pytree import convert
+
+from torch import nonzero
 from . import piece
 import numpy as np
 from PIL import Image
@@ -14,8 +16,6 @@ for i in glob("chessbot/Board_images/*.png"):
     name = i.split(".png")[0]
     name = name.replace("\\", "/").split("/")[-1]
     storage[name] = Image.open(i)
-
-print(storage)
 
 def _convert_fen_to_array(notation):
 
@@ -135,9 +135,11 @@ class Board():
         else:
             self.board_image, self.board_array = generate_new_board()
 
-        self.board_image.save("Current_game/initial_board.png")
+        self.board_image.save("chessbot/Current_game/initial_board.png")
 
-        self.fen = None
+        self.black_ghost_piece = None
+        self.white_ghost_piece = None
+
         self.board = []
 
         for i in range(8):
@@ -236,7 +238,7 @@ class Board():
 
         self.board_array = arr
         self.board_image = convert_array_to_image(arr)
-        self.board_image.save("Current_game/board.png")
+        self.board_image.save("chessbot/Current_game/board.png")
 
     def _print_board(self):
         buffer = ""

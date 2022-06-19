@@ -30,6 +30,7 @@ def check_diag_castle(color, board, start, to):
             return True
         i += x_pos
         j += y_pos
+        print(i, j)
         exists_piece = board.board[i][j] != None
 
     return True
@@ -57,7 +58,7 @@ def check_updown_castle(color, board, start, to):
     x_pos = 1 if to[0] - start[0] > 0 else -1
     i = start[0] + x_pos
 
-    front_piece = board[i][start[1]]
+    front_piece = board.board[i][start[1]]
     if front_piece != None and front_piece.name == 'K' and front_piece.color != color:
         return False
 

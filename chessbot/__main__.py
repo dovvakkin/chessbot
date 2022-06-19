@@ -63,7 +63,7 @@ def game_start(message):
     current_games[message.chat.id] = Player()
     #chessboard_url = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/AAA_SVG_Chessboard_and_chess_pieces_02.svg/1024px-AAA_SVG_Chessboard_and_chess_pieces_02.svg.png?20200505220000"
     #bot.send_photo(message.chat.id, photo=chessboard_url, caption='Сделай свой ход', reply_markup=make_keyboard())
-    img = open("Current_game/initial_board.png", 'rb')
+    img = open("chessbot/Current_game/initial_board.png", 'rb')
     bot.send_photo(message.chat.id, photo=img,
                    caption='Сделай свой ход', reply_markup=make_keyboard())
     #bot.send_message(message.chat.id, 'Сделай свой ход', reply_markup=make_keyboard())
@@ -76,11 +76,12 @@ def handle_query(call):
     if current_games[chat_id].has_prev_cell():
         current_games[chat_id].set_move_to(move)
         if current_games[chat_id].check_move_valid():
+            print(current_games[chat_id].chess.fen)
             # обрабатывать ход
             current_games[chat_id].clear_accum()
             #url = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/AAA_SVG_Chessboard_and_chess_pieces_02.svg/1024px-AAA_SVG_Chessboard_and_chess_pieces_02.svg.png?20200505220000"
-            img = open("Current_game/board.png", 'rb')
-            print(current_games[chat_id].chess.board.board_array)
+            img = open("chessbot/Current_game/board.png", 'rb')
+            #print(current_games[chat_id].chess.board.board_array)
             bot.edit_message_media(
                 chat_id=call.message.chat.id,
                 media=types.InputMediaPhoto(media=img),
