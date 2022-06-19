@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 def check_knight(color, board, pos):
     piece = board.board[pos[0]][pos[1]]
     if piece != None and piece.color != color and piece.name == 'N':
@@ -57,6 +59,84 @@ def check_diag(board, start, to):
     return True
 
 
+def check_check(color, board, position):
+    
+    """
+    color: Boolean
+    True if White, False if Black
+
+    board: List
+    list of Pieces / None
+
+    position: tuple(2)
+    King's position
+
+    Checking if King Piece is in check.
+    """
+
+    # 1 - check through all 8 directions:
+
+    directions = [[1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1], [0, 1]]
+    knight_directions = [[-2, 1], [-1, 2], [1, 2], [2, 1], [2, -1], [1, -2], [-1, -2], [-2, -1]]
+
+    for direction in knight_directions:
+        # checking for Horse
+
+        x, y = direction[0] + position[0], direction[1] + position[1]
+
+        if min(x, y) < 0 or max(x, y) > 7:
+            continue
+
+        if ~check_knight(color, board, (x, y)):
+            return True
+
+    for direction in directions:
+
+        i, j = deepcopy(position)
+        x_dir, y_dir = direction
+        first_step = True
+
+        while min(i, j) >= 0 and max(i, j) <= 7:
+
+            i += x_dir
+            j += y_dir
+
+            if min(i, j) < 0 or max(i, j) > 7:
+                break
+
+            if board.board[i][j] == None:
+                continue
+            # при проверке соседних клеток хотим игнорировать самого короля
+            if board.board[i][j].name == 'K' and board.board[i][j].color == color: 
+                continue
+
+            if board.board[i][j].color == color:
+                    break
+
+            if abs(direction[0]) + abs(direction[1]) == 2: #diag
+                
+                if first_step:
+                    first_step = False
+
+                    if board.board[i][j] == 'P':
+
+                        if color: # white king
+                            if i < position[0]:
+                                return True
+                        else:
+                            if i > position[0]:
+                                return False
+
+                if board.board[i][j].name in ['B', 'Q']:
+                    return True
+
+            else: #line
+
+                if board.board[i][j].name in ['R', 'Q']:
+                    return True
+
+    return False
+
 def check_updown_castle(color, board, start, to):
 
     x_pos = 1 if to[0] - start[0] > 0 else -1
@@ -78,7 +158,6 @@ def check_updown_castle(color, board, start, to):
         i += x_pos
 
     return True
-
 
 def check_updown(board, start, to):
     if start[0] == to[0]:
