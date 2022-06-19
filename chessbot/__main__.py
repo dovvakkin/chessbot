@@ -1,3 +1,4 @@
+from gettext import gettext
 import telebot
 from telebot import types
 import string
@@ -55,7 +56,7 @@ class Player:
 @bot.message_handler(commands=['stop'])
 def game_start(message):
     del current_games[message.chat.id]
-    bot.send_message(message.chat.id, 'Покеда')
+    bot.send_message(message.chat.id, gettext('Покеда'))
 
 
 @bot.message_handler(commands=['start'])
@@ -65,7 +66,7 @@ def game_start(message):
     #bot.send_photo(message.chat.id, photo=chessboard_url, caption='Сделай свой ход', reply_markup=make_keyboard())
     img = open("chessbot/Current_game/initial_board.png", 'rb')
     bot.send_photo(message.chat.id, photo=img,
-                   caption='Сделай свой ход', reply_markup=make_keyboard())
+                   caption=gettext('Сделай свой ход'), reply_markup=make_keyboard())
     #bot.send_message(message.chat.id, 'Сделай свой ход', reply_markup=make_keyboard())
 
 
@@ -90,7 +91,7 @@ def handle_query(call):
             )
             bot.edit_message_caption(
                 chat_id=call.message.chat.id,
-                caption=f"Сделай следующий ход",
+                caption=gettext("Сделай следующий ход"),
                 message_id=call.message.message_id,
                 reply_markup=make_keyboard()
             )
@@ -99,7 +100,7 @@ def handle_query(call):
             if current_games[chat_id].prev_state != 1:
                 bot.edit_message_caption(
                     chat_id=call.message.chat.id,
-                    caption="Невозможный ход",
+                    caption=gettext("Невозможный ход"),
                     message_id=call.message.message_id,
                     reply_markup=make_keyboard()
                 )
@@ -109,7 +110,7 @@ def handle_query(call):
         if current_games[chat_id].has_piece_under(move):
             bot.edit_message_caption(
                 chat_id=call.message.chat.id,
-                caption=f"Куда поставить фигуру с {move}",
+                caption=gettext("Куда поставить фигуру с ") + f"{move}",
                 message_id=call.message.message_id,
                 reply_markup=make_keyboard()
             )
@@ -119,7 +120,7 @@ def handle_query(call):
             if current_games[chat_id].prev_state != 2:
                 bot.edit_message_caption(
                     chat_id=call.message.chat.id,
-                    caption=f"Фигуры не выбрано",
+                    caption=gettext("Фигуры не выбрано"),
                     message_id=call.message.message_id,
                     reply_markup=make_keyboard()
                 )
@@ -130,13 +131,13 @@ def handle_query(call):
 @bot.message_handler(commands=['kill'])
 def create_new_table(message):
     if message.from_user.id not in admins:
-        bot.send_message(message.chat.id, 'Не убий!')
+        bot.send_message(message.chat.id, gettext('Не убiй!'))
         return
-    print('Ня пока((')
+    print(gettext('Ня пока(('))
     bot.stop_polling()
     exit()
 
 
 if __name__ == '__main__':
-    print('Поехали!')
+    print(gettext('Поехали!'))
     bot.polling()
