@@ -13,6 +13,23 @@ def task_gitclean():
     return {
             'actions': ['git clean -xdf'],
            }
+
+
+def task_html():
+    """Make HTML documentation."""
+    return {
+            'actions': ['sphinx-build -M html docs build'],
+           }
+
+
+def task_test():
+    """Preform tests."""
+    yield {'actions': ['coverage run -m unittest -v'], 'name': "run"}
+    yield {'actions': ['coverage report'], 'verbosity': 2, 'name': "report"}
+
+
+
+
 def task_pot():
     """Re-create .pot ."""
     return {

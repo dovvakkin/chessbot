@@ -18,6 +18,16 @@ default_parameters = {
 
 
 class Solver():
+    """
+    A class to represent a wrapper of a stockfish solver
+    ...
+    Attributes:
+    -----------
+    path : str
+        path to stokfish execution
+    solver : bool
+        True if piece is white
+    """
 
     def __init__(self, path=None, depth=15, params=None):
 
