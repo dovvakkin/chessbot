@@ -48,6 +48,32 @@ class Chess():
             return
 
         if target_piece.is_valid_move(self.board, start, to):
+
+            # for FEN calculation
+            if not self.turn:
+                self.turn_number += 1
+            if self.castling != "-":
+                if target_piece.name == 'R':
+                    if target_piece.king_side:
+                        if self.turn:
+                            self.castling.replace("K", "")
+                        else:
+                            self.castling.replace("k", "")
+                    else:
+                        if self.turn:
+                            self.castling.replace("Q", "")
+                        else:
+                            self.castling.replace("q", "")
+                if target_piece.name == 'K':
+                    if self.turn:
+                        self.castling.replace("K", "")
+                        self.castling.replace("Q", "")
+                    else:
+                        self.castling.replace("k", "")
+                        self.castling.replace("q", "")
+                if self.castling == "":
+                    self.castling == "-"
+
             if target_piece.name == 'K' and abs(start[1] - to[1]) == 2:
                 
                 if self.turn and self.black_ghost_piece:
@@ -77,11 +103,6 @@ class Chess():
                 self.board.board[self.black_ghost_piece[0]][self.black_ghost_piece[1]] = None
             elif not self.turn and self.white_ghost_piece:
                 self.board.board[self.white_ghost_piece[0]][self.white_ghost_piece[1]] = None
-
-            # for FEN calculation
-            if not self.turn:
-
-                self.turn_number += 1
 
             self.turn = not self.turn
 
