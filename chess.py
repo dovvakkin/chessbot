@@ -33,19 +33,29 @@ class Chess():
                     pawn = piece.Bishop(True)
         self.board.board[pos[0]][pos[1]] = pawn 
 
+    def has_piece_under(self, start):
+        print(self.board)
+        print(self.board.board)
+        print(start)
+        if self.board.board[start[0]][start[1]] == None:
+            return False
+        if self.board.board[start[0]][start[1]].name == "GP":
+            return False
+        return True
+
     def move(self, start, to):
         if self.board.board[start[0]][start[1]] == None:
-            return
+            return False
 
         target_piece = self.board.board[start[0]][start[1]]
         if self.turn != target_piece.color:
-            return
+            return False
 
         end_piece = self.board.board[to[0]][to[1]]
         is_end_piece = end_piece != None
 
         if is_end_piece and self.board.board[start[0]][start[1]].color == end_piece.color:
-            return
+            return False
 
         if target_piece.is_valid_move(self.board, start, to):
 
@@ -81,7 +91,7 @@ class Chess():
                 elif not self.turn and self.white_ghost_piece:
                     self.board.board[self.white_ghost_piece[0]][self.white_ghost_piece[1]] = None
                 self.turn = not self.turn
-                return
+                return True
                 
             if self.board.board[to[0]][to[1]]:
                 if self.board.board[to[0]][to[1]].name == "GP":
@@ -106,11 +116,15 @@ class Chess():
 
             self.turn = not self.turn
 
+            return True
+        else:
+            return False
+
 
 def translate(s):
     try:
-        row = int(s[0])
-        col = s[1]
+        row = int(s[1])
+        col = s[0]
         if row < 1 or row > 8:
             return None
         if col < 'a' or col > 'h':

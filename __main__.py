@@ -1,8 +1,10 @@
 import telebot
 from telebot import types
 import string
+import chess
+from chess import translate
 
-TOKEN = ""
+TOKEN = "5505142382:AAEDArd2zRDlygMFYW_PJNWDsb75dZLYfNo"
 bot = telebot.TeleBot(TOKEN, parse_mode=None)
 
 current_games = {}
@@ -19,28 +21,33 @@ def make_keyboard():
     return markup
 
 
-class GameBoard:
+class Player:
     def __init__(self):
         self.board = []
-        self.move_acc = ''
+        self.move_start = ''
+        self.move_to = ''
+        self.chess = chess.Chess()
 
-    def accumulate_move(self, cell):
-        self.move_acc += cell
+    def set_move_start(self, cell):
+        self.move_start = translate(cell)
+
+    def set_move_to(self, cell):
+        self.move_to = translate(cell)
 
     def clear_accum(self):
-        self.move_acc = ''
+        self.move_start = ''
+        self.move_to = ''
 
     def has_piece_under(self, cell):
-        return True
+        print(cell)
+        start = translate(cell)
+        return self.chess.has_piece_under(start)
 
     def has_prev_cell(self):
-        return len(self.move_acc) == 2
+        return self.move_start != ''
 
     def check_move_valid(self):
-        return True
-
-    def apply_move(move):
-        pass
+        return self.chess.move(self.move_start, self.move_to) 
 
 
 @bot.message_handler(commands=['stop'])
@@ -51,7 +58,7 @@ def game_start(message):
 
 @bot.message_handler(commands=['start'])
 def game_start(message):
-    current_games[message.chat.id] = GameBoard()
+    current_games[message.chat.id] = Player()
     chessboard_url = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/AAA_SVG_Chessboard_and_chess_pieces_02.svg/1024px-AAA_SVG_Chessboard_and_chess_pieces_02.svg.png?20200505220000"
     bot.send_photo(message.chat.id, photo=chessboard_url, caption='Сделай свой ход', reply_markup=make_keyboard())
     #bot.send_message(message.chat.id, 'Сделай свой ход', reply_markup=make_keyboard())
