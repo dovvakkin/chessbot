@@ -1,0 +1,6 @@
+[MASTER]
+additional-builtins=_
+[MESSAGE_CONTROL]
+disable=
+    too-few-public-methods,
+    too-many-branches

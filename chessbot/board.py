@@ -1,18 +1,23 @@
-from . import piece
-import numpy as np
-from PIL import Image
-from glob import glob
+"""Module with board representing class and FEN notation handling."""
+
 from copy import deepcopy
-from random import randint, choice
+from glob import glob
+from random import choice, randint
 
-initial_notation = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-storage = {}
-debug_mode = False
+from PIL import Image
 
-for i in glob("chessbot/Board_images/*.png"):
-    name = i.split(".png")[0]
+import numpy as np
+
+from . import piece
+
+INITIAL_NOTATION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+STORAGE = {}
+DEBUG_MODE = False
+
+for k in glob("chessbot/Board_images/*.png"):
+    name = k.split(".png")[0]
     name = name.replace("\\", "/").split("/")[-1]
-    storage[name] = Image.open(i)
+    STORAGE[name] = Image.open(k)
 
 def _convert_fen_to_array(notation):
 
@@ -22,60 +27,61 @@ def _convert_fen_to_array(notation):
     board_pt = notation.split(" ")[0]
     board = board_pt.replace("\\", "/").split("/")
 
-    for i, line in enumerate(board):
+    for j, line in enumerate(board):
 
         pos = 0
-        for ch in line:
+        for character in line:
 
-            if ch.isdigit():
-                pos += int(ch)
+            if character.isdigit():
+                pos += int(character)
 
             else:
                 fig = ""
 
-                if ch.lower() == ch:
-                    fig = "b" + ch.upper()
+                if character.lower() == character:
+                    fig = "b" + character.upper()
                 else:
-                    fig = "w" + ch
+                    fig = "w" + character
 
-                arr[i, pos] = fig
+                arr[j, pos] = fig
                 pos += 1
 
     return arr
 
 
 def convert_array_to_image(arr, previous_move=None):
-
-    board = deepcopy(storage['board'])
+    """Convert numpy array board representation to png image."""
+    board = deepcopy(STORAGE['board'])
 
     if not previous_move is None:
         for pos in previous_move:
 
             if np.sum(pos) % 2:
-                board.paste(storage['square_dark'], (28 + pos[1]
-                            * 90, 28 + pos[0] * 90), storage['square_dark'])
+                board.paste(STORAGE['square_dark'], (28 + pos[1]
+                            * 90, 28 + pos[0] * 90), STORAGE['square_dark'])
             else:
-                board.paste(storage['square_light'], (28 + pos[1]
-                            * 90, 28 + pos[0] * 90), storage['square_light'])
+                board.paste(STORAGE['square_light'], (28 + pos[1]
+                            * 90, 28 + pos[0] * 90), STORAGE['square_light'])
 
     for i, line in enumerate(arr):
-        for j, ch in enumerate(line):
-            if ch != '':
-                board.paste(storage[ch], (33 + j * 90,
-                            33 + i * 90), storage[ch])
+        for j, character in enumerate(line):
+            if character != '':
+                board.paste(STORAGE[character], (33 + j * 90,
+                            33 + i * 90), STORAGE[character])
 
     return board
 
 
 def convert_fen_to_image(fen, previous_move=None):
     """
-    Transforms FEN notation to board image
+    Transform FEN notation to board image.
 
     params:
     fen : string
     Chess notation
 
-    previous_move : None or array (list) of size 2, 2 - coordinates of previous and new position of last move
+    previous_move : None or array (list) of size 2, 2 - coordinates of
+    previous and new position of last move
     """
     arr = _convert_fen_to_array(fen)
     return convert_array_to_image(arr, previous_move)
@@ -83,36 +89,33 @@ def convert_fen_to_image(fen, previous_move=None):
 
 def generate_new_board():
     """
-    Generates board from default fen notation
+    Generate board from default fen notation.
+
     Returns PIL.Image board object + array of figures
     """
-
-    img = convert_fen_to_image(initial_notation)
-    arr = _convert_fen_to_array(initial_notation)
+    img = convert_fen_to_image(INITIAL_NOTATION)
+    arr = _convert_fen_to_array(INITIAL_NOTATION)
 
     return img, arr
 
 
 def generate_random_board():
-    """
-    Generates board with random initial setup 
-    """
-
+    """Generate board with random initial setup."""
     first_row = ['R', 'N', 'B', 'Q']
     second_row = first_row + ['P']
 
     arr = np.empty((8, 8)).astype(str)
     arr[:, :] = ""
 
-    wx, bx = randint(0, 7), randint(0, 7)
-    arr[0, bx] = 'bK'
-    arr[7, wx] = 'wK'
+    w_x, b_x = randint(0, 7), randint(0, 7)
+    arr[0, b_x] = 'bK'
+    arr[7, w_x] = 'wK'
 
-    b_first_layer = [x for x in range(8) if x != bx]
+    b_first_layer = [x for x in range(8) if x != b_x]
     for pos in b_first_layer:
         arr[0, pos] = 'b' + choice(first_row)
 
-    w_first_layer = [x for x in range(8) if x != wx]
+    w_first_layer = [x for x in range(8) if x != w_x]
     for pos in w_first_layer:
         arr[7, pos] = 'w' + choice(first_row)
 
@@ -124,9 +127,10 @@ def generate_random_board():
 
 
 class Board():
+    """Class representing game board."""
 
     def __init__(self, random_mode=False):
-
+        """Game board initialization."""
         if random_mode:
             self.board_image, self.board_array = generate_random_board()
         else:
@@ -173,10 +177,7 @@ class Board():
                             "Incorrect symbol enccountered in Board Array")
 
     def _convert_array_to_fen(self):
-        """
-        converts 8x8 array (or list of lists) to positional part of FEN notation
-        """
-
+        """Convert 8x8 array (or list of lists) to positional part of FEN notation."""
         blueprint = []  # using list because joining them such way is less memory-intensive
 
         for line in self.board_array:
@@ -206,10 +207,7 @@ class Board():
         return "/".join(blueprint)
 
     def _update_board(self):
-        """
-        Updates board's array and image from self.board object
-        """
-
+        """Update board's array and image from self.board object."""
         arr = np.empty((8, 8)).astype("str")
         arr[:, :] = ""
 
@@ -219,7 +217,7 @@ class Board():
                 if elem is None:
                     continue
 
-                if debug_mode:
+                if DEBUG_MODE:
                     print(elem)
                     print(type(elem))
 
@@ -242,10 +240,10 @@ class Board():
         for i in range(33):
             buffer += "*"
         print(buffer)
-        for i in range(len(self.board)):
+        for i, _ in enumerate(self.board):
             tmp_str = "|"
             for j in self.board[i]:
-                if j == None or j.name == 'GP':
+                if j is None or j.name == 'GP':
                     tmp_str += "   |"
                 elif len(j.name) == 2:
                     tmp_str += (" " + str(j) + "|")
