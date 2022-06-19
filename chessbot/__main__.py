@@ -122,7 +122,7 @@ def handle_query(call):
                 message_id=call.message.message_id,
                 reply_markup=make_keyboard()
             )
-            time.sleep(5) # to give player time to look
+            time.sleep(5) # to give player time to
             #print(current_games[chat_id].chess.fen)
             move = stockfish_solver.make_step(current_games[chat_id].chess.fen)
             if move is None:
@@ -186,7 +186,7 @@ def handle_query(call):
         if current_games[chat_id].has_piece_under(move):
             bot.edit_message_caption(
                 chat_id=call.message.chat.id,
-                caption=_("Куда поставить фигуру с ") + f"{move}",
+                caption=_("Выберите ход для фигуры с поля ") + f"{move}",
                 message_id=call.message.message_id,
                 reply_markup=make_keyboard()
             )
@@ -217,5 +217,5 @@ def delete_table(message):
 
 if __name__ == '__main__':
     set_system_lang()
-    print(_('Поехали!'))
+    print(_('Запуск приложения.'))
     bot.polling()
