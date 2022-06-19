@@ -57,30 +57,31 @@ class Chess():
 
         if target_piece.is_valid_move(self.board, start, to):
 
-            # for FEN calculation
+            # for FEN calculation (turn numbers)
             if not self.turn:
                 self.turn_number += 1
+            # for FEN calculation (castling state)
             if self.castling != "-":
                 if target_piece.name == 'R':
                     if target_piece.king_side:
                         if self.turn:
-                            self.castling.replace("K", "")
+                            self.castling = self.castling.replace("K", "")
                         else:
-                            self.castling.replace("k", "")
+                            self.castling = self.castling.replace("k", "")
                     else:
                         if self.turn:
-                            self.castling.replace("Q", "")
+                            self.castling = self.castling.replace("Q", "")
                         else:
-                            self.castling.replace("q", "")
+                            self.castling = self.castling.replace("q", "")
                 if target_piece.name == 'K':
                     if self.turn:
-                        self.castling.replace("K", "")
-                        self.castling.replace("Q", "")
+                        self.castling = self.castling.replace("K", "")
+                        self.castling = self.castling.replace("Q", "")
                     else:
-                        self.castling.replace("k", "")
-                        self.castling.replace("q", "")
+                        self.castling = self.castling.replace("k", "")
+                        self.castling = self.castling.replace("q", "")
                 if self.castling == "":
-                    self.castling == "-"
+                    self.castling = "-"
 
             if target_piece.name == 'K' and abs(start[1] - to[1]) == 2:
 
@@ -114,9 +115,11 @@ class Chess():
             if self.turn and self.board.black_ghost_piece:
                 self.board.board[self.board.black_ghost_piece[0]
                                  ][self.board.black_ghost_piece[1]] = None
+                self.board.black_ghost_piece = None
             elif not self.turn and self.board.white_ghost_piece:
                 self.board.board[self.board.white_ghost_piece[0]
                                  ][self.board.white_ghost_piece[1]] = None
+                self.board.white_ghost_piece = None
 
             self.turn = not self.turn
             self._update_fen()
@@ -130,26 +133,12 @@ class Chess():
         dictionary = {0: 'a', 1: 'b', 2: 'c',
                       3: 'd', 4: 'e', 5: 'f', 6: 'g', 7: 'h'}
 
-        return str(8 - pos[0]) + dictionary[pos[1]]
+        return dictionary[pos[1]] + str(8 - pos[0])
 
     def _update_fen(self):
+
         """
-        Generates full FEN notation. Positions obtained from inner representation.
-
-        side: Boolean
-        True = White, False = Black
-
-        castling: String
-        Current castling possibilities
-
-        ghost: String
-        Location of ghost pawn if one exists
-
-        halfmove: Int
-        Tie Counter (number of half-moves passed from last figure taken or pawn moved)
-
-        move: Int
-        Move counter
+        Generates full FEN notation from inner representation of game
         """
 
         # 0 - update iternal array and image of board:
