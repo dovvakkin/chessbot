@@ -10,11 +10,12 @@ initial_notation = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 storage = {}
 debug_mode = False
 
-for i in glob("Board_images/*.png"):
+for i in glob("chessbot/Board_images/*.png"):
     name = i.split(".png")[0]
-    name = name.replace("\\", "/").split("/")[1]
+    name = name.replace("\\", "/").split("/")[-1]
     storage[name] = Image.open(i)
 
+print(storage)
 
 def _convert_fen_to_array(notation):
 
