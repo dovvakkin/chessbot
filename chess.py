@@ -35,9 +35,6 @@ class Chess():
         self.board.board[pos[0]][pos[1]] = pawn 
 
     def has_piece_under(self, start):
-        print(self.board)
-        print(self.board.board)
-        print(start)
         if self.board.board[start[0]][start[1]] == None:
             return False
         if self.board.board[start[0]][start[1]].name == "GP":

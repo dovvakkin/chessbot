@@ -27,6 +27,7 @@ class Player:
         self.move_start = ''
         self.move_to = ''
         self.chess = chess.Chess()
+        self.prev_state = 0
 
     def set_move_start(self, cell):
         self.move_start = translate(cell)
@@ -39,7 +40,6 @@ class Player:
         self.move_to = ''
 
     def has_piece_under(self, cell):
-        print(cell)
         start = translate(cell)
         return self.chess.has_piece_under(start)
 
@@ -69,7 +69,7 @@ def handle_query(call):
     move = call.data
     chat_id = call.message.chat.id
     if current_games[chat_id].has_prev_cell():
-        current_games[chat_id].accumulate_move(move)
+        current_games[chat_id].set_move_to(move)
         if current_games[chat_id].check_move_valid():
             # обрабатывать ход
             current_games[chat_id].clear_accum()
@@ -86,13 +86,16 @@ def handle_query(call):
                 message_id=call.message.message_id,
                 reply_markup=make_keyboard()
             )
+            current_games[chat_id].prev_state = 0
         else:
-            bot.edit_message_caption(
-                chat_id=call.message.chat.id,
-                caption="Невозможный ход",
-                message_id=call.message.message_id,
-                reply_markup=make_keyboard()
-            )
+            if current_games[chat_id].prev_state != 1:
+                bot.edit_message_caption(
+                    chat_id=call.message.chat.id,
+                    caption="Невозможный ход",
+                    message_id=call.message.message_id,
+                    reply_markup=make_keyboard()
+                )
+            current_games[chat_id].prev_state = 1
             current_games[chat_id].clear_accum()
     else:
         if current_games[chat_id].has_piece_under(move):
@@ -102,14 +105,17 @@ def handle_query(call):
                 message_id=call.message.message_id,
                 reply_markup=make_keyboard()
             )
-            current_games[chat_id].accumulate_move(move)
+            current_games[chat_id].prev_state = 0
+            current_games[chat_id].set_move_start(move)
         else:
-            bot.edit_message_caption(
-                chat_id=call.message.chat.id,
-                caption=f"Фигуры не выбрано",
-                message_id=call.message.message_id,
-                reply_markup=make_keyboard()
-            )
+            if current_games[chat_id].prev_state != 2:
+                bot.edit_message_caption(
+                    chat_id=call.message.chat.id,
+                    caption=f"Фигуры не выбрано",
+                    message_id=call.message.message_id,
+                    reply_markup=make_keyboard()
+                )
+            current_games[chat_id].prev_state = 2
             current_games[chat_id].clear_accum()
 
 

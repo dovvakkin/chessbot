@@ -46,7 +46,6 @@ def check_diag(board, start, to):
     j = start[1] + y_pos
     while (i < to[0] if x_pos==1 else i > to[0]):
         if board.board[i][j] != None:
-            print("At: " + str((i, j)))
             return False
         i += x_pos
         j += y_pos
@@ -80,7 +79,6 @@ def check_updown(board, start, to):
 
         for i in range(smaller_y + 1, bigger_y):
             if board.board[start[0]][i] != None:
-                print("At: " + str(start[0], i))
                 return False
         return True
     else:
