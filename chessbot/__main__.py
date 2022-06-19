@@ -14,7 +14,6 @@ TOKEN = "5505142382:AAEDArd2zRDlygMFYW_PJNWDsb75dZLYfNo"
 bot = telebot.TeleBot(TOKEN, parse_mode=None)
 
 current_games = {}
-admins = [414173417]
 stockfish_solver = solver.Solver()
 
 
@@ -220,9 +219,6 @@ def handle_query(call):
 @bot.message_handler(commands=['kill'])
 def delete_table(message):
     """Kills current game."""
-    if message.from_user.id not in admins:
-        bot.send_message(message.chat.id, _('Нет доступа: возобновление работы.'))
-        return
     print(_('Остановка работы приложения.'))
     bot.stop_polling()
     exit()
