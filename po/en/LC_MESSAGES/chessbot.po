@@ -1,0 +1,57 @@
+# English translations for PROJECT.
+# Copyright (C) 2022 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2022-06-19 17:51+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+#: chessbot/__main__.py:59
+msgid "Покеда"
+msgstr "Bye"
+
+#: chessbot/__main__.py:69
+msgid "Сделай свой ход"
+msgstr "Make your move"
+
+#: chessbot/__main__.py:94
+msgid "Сделай следующий ход"
+msgstr "Make next move"
+
+#: chessbot/__main__.py:103
+msgid "Невозможный ход"
+msgstr "Impossible move"
+
+#: chessbot/__main__.py:113
+msgid "Куда поставить фигуру с "
+msgstr "Where to place piece from "
+
+#: chessbot/__main__.py:123
+msgid "Фигуры не выбрано"
+msgstr "No piece selected"
+
+#: chessbot/__main__.py:134
+msgid "Не убiй!"
+msgstr "Thou shalt not kill"
+
+#: chessbot/__main__.py:136
+msgid "Ня пока(("
+msgstr "Adios amigo"
+
+#: chessbot/__main__.py:142
+msgid "Поехали!"
+msgstr "Go go go!"
+
