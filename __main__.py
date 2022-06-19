@@ -79,7 +79,8 @@ def handle_query(call):
             # обрабатывать ход
             current_games[chat_id].clear_accum()
             #url = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/AAA_SVG_Chessboard_and_chess_pieces_02.svg/1024px-AAA_SVG_Chessboard_and_chess_pieces_02.svg.png?20200505220000"
-            img = open("Current_game/board.png")
+            img = open("Current_game/board.png", 'rb')
+            print(current_games[chat_id].chess.board.board_array)
             bot.edit_message_media(
                 chat_id=call.message.chat.id,
                 media=types.InputMediaPhoto(media=img),

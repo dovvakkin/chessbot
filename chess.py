@@ -92,6 +92,7 @@ class Chess():
                     self.board.board[self.white_ghost_piece[0]
                                      ][self.white_ghost_piece[1]] = None
                 self.turn = not self.turn
+                self.board._update_board()
                 return True
 
             if self.board.board[to[0]][to[1]]:
@@ -119,7 +120,7 @@ class Chess():
                                  ][self.white_ghost_piece[1]] = None
 
             self.turn = not self.turn
-
+            self.board._update_board()
             return True
         else:
             return False
