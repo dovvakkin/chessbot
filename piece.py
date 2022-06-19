@@ -5,24 +5,24 @@ def check_knight(color, board, pos):
     return True
 
 
-def check_diag_castle(color, board, start, to): 
+def check_diag_castle(color, board, start, to):
     if abs(start[0] - to[0]) != abs(start[1] - to[1]):
         return False
 
-    x_pos =  1 if to[0] - start[0] > 0 else -1
+    x_pos = 1 if to[0] - start[0] > 0 else -1
     y_pos = 1 if to[1] - start[1] > 0 else -1
 
     i = start[0] + x_pos
     j = start[1] + y_pos
-    
+
     exists_piece = board.board[i][j] != None
     if exists_piece and (board.board[i][j].name == 'P' or board.board[i][j].name == 'K') and \
-        board.board[i][j].color != color:
+            board.board[i][j].color != color:
         return False
 
-    while (i <= to[0] if x_pos==1 else i >= to[0]):
+    while (i <= to[0] if x_pos == 1 else i >= to[0]):
         if exists_piece and board.board[i][j].color != color:
-            if board.board[i][j].name in ['B', 'Q']: 
+            if board.board[i][j].name in ['B', 'Q']:
                 return False
             else:
                 return True
@@ -39,12 +39,12 @@ def check_diag(board, start, to):
     if abs(start[0] - to[0]) != abs(start[1] - to[1]):
         return False
 
-    x_pos =  1 if to[0] - start[0] > 0 else -1
+    x_pos = 1 if to[0] - start[0] > 0 else -1
     y_pos = 1 if to[1] - start[1] > 0 else -1
 
     i = start[0] + x_pos
     j = start[1] + y_pos
-    while (i < to[0] if x_pos==1 else i > to[0]):
+    while (i < to[0] if x_pos == 1 else i > to[0]):
         if board.board[i][j] != None:
             return False
         i += x_pos
@@ -53,7 +53,7 @@ def check_diag(board, start, to):
 
 
 def check_updown_castle(color, board, start, to):
-    
+
     x_pos = 1 if to[0] - start[0] > 0 else -1
     i = start[0] + x_pos
 
@@ -69,8 +69,9 @@ def check_updown_castle(color, board, start, to):
                 return True
         if board.board[i][start[1]] != None and board.board[i][start[1]].color == color:
             return True
-        
+
     return True
+
 
 def check_updown(board, start, to):
     if start[0] == to[0]:
@@ -104,16 +105,17 @@ class Piece():
 
 
 class Rook(Piece):
-    def __init__(self, color, first_move = True, king_side = True):
+    def __init__(self, color, first_move=True, king_side=True):
         super().__init__(color)
         self.name = "R"
-        self.first_move = first_move 
+        self.first_move = first_move
         self.king_side = king_side
 
     def is_valid_move(self, board, start, to):
         if start[0] == to[0] or start[1] == to[1]:
             return check_updown(board, start, to)
         return False
+
 
 class Knight(Piece):
     def __init__(self, color):
@@ -127,6 +129,7 @@ class Knight(Piece):
             return True
         return False
 
+
 class Bishop(Piece):
     def __init__(self, color):
         super().__init__(color)
@@ -134,6 +137,7 @@ class Bishop(Piece):
 
     def is_valid_move(self, board, start, to):
         return check_diag(board, start, to)
+
 
 class Queen(Piece):
     def __init__(self, color):
@@ -148,12 +152,13 @@ class Queen(Piece):
             return check_updown(board, start, to)
         return False
 
+
 class King(Piece):
-    def __init__(self, color, first_move = True):
+    def __init__(self, color, first_move=True):
         super().__init__(color)
         self.name = "K"
-        self.first_move = first_move 
-        
+        self.first_move = first_move
+
     def can_castle(self, board, start, to, right):
         if self.color and right:
             knight_attack = check_knight(self.color, board, (6, 3)) and \
@@ -163,7 +168,7 @@ class King(Piece):
                 check_knight(self.color, board, (5, 6)) and \
                 check_knight(self.color, board, (5, 7)) and \
                 check_knight(self.color, board, (6, 7))
-            if not knight_attack: 
+            if not knight_attack:
                 return False
 
             diags = check_diag_castle(self.color, board, (7, 5), (2, 0)) and \
@@ -175,15 +180,15 @@ class King(Piece):
 
             updowns = check_updown_castle(self.color, board, (7, 5), (0, 5)) and \
                 check_updown_castle(self.color, board, (7, 6), (0, 6))
-            if not updowns: 
+            if not updowns:
                 return False
 
-            board.board[to[0]][to[1]] = King(True, False) 
-            board.board[to[0]][to[1]-1] = Rook(True, False) 
+            board.board[to[0]][to[1]] = King(True, False)
+            board.board[to[0]][to[1]-1] = Rook(True, False)
             board.board[start[0]][start[1]] = None
             board.board[7][7] = None
             return True
-        
+
         if self.color and not right:
             knight_attack = check_knight(self.color, board, (6, 0)) and \
                 check_knight(self.color, board, (6, 1)) and \
@@ -192,8 +197,8 @@ class King(Piece):
                 check_knight(self.color, board, (5, 3)) and \
                 check_knight(self.color, board, (5, 4)) and \
                 check_knight(self.color, board, (6, 4)) and \
-                check_knight(self.color, board, (6, 5)) 
-            if not knight_attack: 
+                check_knight(self.color, board, (6, 5))
+            if not knight_attack:
                 return False
 
             diags = check_diag_castle(self.color, board, (7, 2), (5, 0)) and \
@@ -205,9 +210,9 @@ class King(Piece):
 
             updowns = check_updown_castle(self.color, board, (7, 2), (0, 2)) and \
                 check_updown_castle(self.color, board, (7, 3), (0, 3))
-            if not updowns: 
+            if not updowns:
                 return False
-            board.board[to[0]][to[1]] = King(True, False) 
+            board.board[to[0]][to[1]] = King(True, False)
             board.board[to[0]][to[1]+1] = Rook(True, False)
             board.board[start[0]][start[1]] = None
             board.board[7][0] = None
@@ -222,7 +227,7 @@ class King(Piece):
                 check_knight(self.color, board, (2, 5)) and \
                 check_knight(self.color, board, (2, 6)) and \
                 check_knight(self.color, board, (2, 7))
-            if not knight_attack: 
+            if not knight_attack:
                 return False
 
             diags = check_diag_castle(self.color, board, (0, 5), (5, 0)) and \
@@ -234,16 +239,16 @@ class King(Piece):
 
             updowns = check_updown_castle(self.color, board, (0, 2), (7, 2)) and \
                 check_updown_castle(self.color, board, (0, 3), (7, 3))
-            if not updowns: 
+            if not updowns:
                 return False
 
             board.board[to[0]][to[1]] = King(False, False)
-            board.board[to[0]][to[1]-1] = Rook(False, False) 
+            board.board[to[0]][to[1]-1] = Rook(False, False)
             board.board[start[0]][start[1]] = None
             board.board[0][7] = None
 
             return True
-        
+
         if not self.color and not right:
             knight_attack = check_knight(self.color, board, (1, 0)) and \
                 check_knight(self.color, board, (1, 1)) and \
@@ -252,8 +257,8 @@ class King(Piece):
                 check_knight(self.color, board, (2, 1)) and \
                 check_knight(self.color, board, (2, 2)) and \
                 check_knight(self.color, board, (2, 3)) and \
-                check_knight(self.color, board, (2, 4)) 
-            if not knight_attack: 
+                check_knight(self.color, board, (2, 4))
+            if not knight_attack:
                 return False
 
             diags = check_diag_castle(self.color, board, (0, 2), (5, 7)) and \
@@ -265,11 +270,11 @@ class King(Piece):
 
             updowns = check_updown_castle(self.color, board, (0, 2), (7, 2)) and \
                 check_updown_castle(self.color, board, (0, 3), (7, 3))
-            if not updowns: 
+            if not updowns:
                 return False
 
             board.board[to[0]][to[1]] = King(False, False)
-            board.board[to[0]][to[1]+1] = Rook(False, False) 
+            board.board[to[0]][to[1]+1] = Rook(False, False)
             board.board[start[0]][start[1]] = None
             board.board[0][0] = None
 
@@ -316,7 +321,8 @@ class Pawn(Piece):
                         if board.board[i][start[1]] != None:
                             return False
                     if start[0] - to[0] == 2:
-                        board.board[start[0] - 1][start[1]] = GhostPawn(self.color)
+                        board.board[start[0] - 1][start[1]
+                                                  ] = GhostPawn(self.color)
                         board.white_ghost_piece = (start[0] - 1, start[1])
                     self.first_move = False
                     return True
@@ -336,7 +342,8 @@ class Pawn(Piece):
                             return False
                     # insert a GhostPawn
                     if to[0] - start[0] == 2:
-                        board.board[start[0] + 1][start[1]] = GhostPawn(self.color)
+                        board.board[start[0] + 1][start[1]
+                                                  ] = GhostPawn(self.color)
                         board.black_ghost_piece = (start[0] + 1, start[1])
                     self.first_move = False
                     return True

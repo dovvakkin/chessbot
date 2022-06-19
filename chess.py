@@ -1,9 +1,10 @@
 import board
 import piece
 
+
 class Chess():
 
-    def __init__(self, random_mode = False):
+    def __init__(self, random_mode=False):
         self.board = board.Board()
 
         self.turn = True
@@ -16,7 +17,7 @@ class Chess():
         self.random_mode = random_mode
         if random_mode:
             self.castling = '-'
-        
+
         else:
             self.castling = "KQkq"
 
@@ -32,7 +33,7 @@ class Chess():
                     pawn = piece.Knight(True)
                 elif promote == 'B':
                     pawn = piece.Bishop(True)
-        self.board.board[pos[0]][pos[1]] = pawn 
+        self.board.board[pos[0]][pos[1]] = pawn
 
     def has_piece_under(self, start):
         if self.board.board[start[0]][start[1]] == None:
@@ -83,15 +84,17 @@ class Chess():
                     self.castling == "-"
 
             if target_piece.name == 'K' and abs(start[1] - to[1]) == 2:
-                
+
                 if self.turn and self.black_ghost_piece:
-                    self.board.board[self.black_ghost_piece[0]][self.black_ghost_piece[1]] = None
+                    self.board.board[self.black_ghost_piece[0]
+                                     ][self.black_ghost_piece[1]] = None
                 elif not self.turn and self.white_ghost_piece:
-                    self.board.board[self.white_ghost_piece[0]][self.white_ghost_piece[1]] = None
+                    self.board.board[self.white_ghost_piece[0]
+                                     ][self.white_ghost_piece[1]] = None
                 self.turn = not self.turn
                 return True
-                
-            if self.board.board[to[0]][to[1]]: 
+
+            if self.board.board[to[0]][to[1]]:
                 if self.board.board[to[0]][to[1]].name == "GP":
                     if self.turn:
                         self.board.board[
@@ -101,16 +104,19 @@ class Chess():
                         ] = None
                         self.black_ghost_piece = None
                     else:
-                        self.board.board[self.white_ghost_piece[0] - 1][self.black_ghost_piece[1]] = None
+                        self.board.board[self.white_ghost_piece[0] -
+                                         1][self.black_ghost_piece[1]] = None
                         self.white_ghost_piece = None
 
             self.board.board[to[0]][to[1]] = target_piece
             self.board.board[start[0]][start[1]] = None
 
             if self.turn and self.black_ghost_piece:
-                self.board.board[self.black_ghost_piece[0]][self.black_ghost_piece[1]] = None
+                self.board.board[self.black_ghost_piece[0]
+                                 ][self.black_ghost_piece[1]] = None
             elif not self.turn and self.white_ghost_piece:
-                self.board.board[self.white_ghost_piece[0]][self.white_ghost_piece[1]] = None
+                self.board.board[self.white_ghost_piece[0]
+                                 ][self.white_ghost_piece[1]] = None
 
             self.turn = not self.turn
 
@@ -120,15 +126,15 @@ class Chess():
 
     def _reverse_translate(pos):
 
-        dictionary = {0 : 'a', 1 : 'b', 2 : 'c', 3 : 'd', 4 : 'e', 5 : 'f', 6 : 'g', 7 : 'h'}
-        
+        dictionary = {0: 'a', 1: 'b', 2: 'c',
+                      3: 'd', 4: 'e', 5: 'f', 6: 'g', 7: 'h'}
+
         return str(8 - pos[0]) + dictionary[pos[1]]
 
     def get_fen(self):
-
         """
         Generates full FEN notation. Positions obtained from inner representation.
-        
+
         side: Boolean
         True = White, False = Black
 
@@ -152,9 +158,9 @@ class Chess():
 
         # 1 - get positional notation:
         fen_container.append(self.board._convert_array_to_fen())
-        
+
         # 2 - get side
-        if self.turn: 
+        if self.turn:
             fen_container.append('w')
         else:
             fen_container.append('b')
@@ -164,20 +170,23 @@ class Chess():
 
         # 4 - get ghost pieces
         if not self.white_ghost_piece is None:
-            fen_container.append(self._reverse_translate(self.white_ghost_piece))
+            fen_container.append(
+                self._reverse_translate(self.white_ghost_piece))
         elif not self.black_ghost_piece is None:
-            fen_container.append(self._reverse_translate(self.black_ghost_piece))
+            fen_container.append(
+                self._reverse_translate(self.black_ghost_piece))
         else:
             fen_container.append('-')
 
         # 5 - halfturns
         fen_container.append(self.halfstep_number)
 
-        # 6 - turns 
+        # 6 - turns
         fen_container.append(self.turn_number)
 
         return " ".join(fen_container)
-        
+
+
 def translate(s):
     try:
         row = int(s[1])
@@ -186,7 +195,8 @@ def translate(s):
             return None
         if col < 'a' or col > 'h':
             return None
-        dictionary = {'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4, 'f': 5, 'g': 6, 'h': 7}
+        dictionary = {'a': 0, 'b': 1, 'c': 2,
+                      'd': 3, 'e': 4, 'f': 5, 'g': 6, 'h': 7}
         return (8 - row, dictionary[col])
     except:
         return None
