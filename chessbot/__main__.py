@@ -8,6 +8,7 @@ from . import chess
 from .chess import translate
 from .localization import set_system_lang
 from . import solver
+import sys
 
 
 TOKEN = "5505142382:AAEDArd2zRDlygMFYW_PJNWDsb75dZLYfNo"
@@ -217,11 +218,11 @@ def handle_query(call):
 
 
 @bot.message_handler(commands=['kill'])
-def delete_table(message):
+def delete_table():
     """Kills current game."""
     print(_('Остановка работы приложения.'))
     bot.stop_polling()
-    exit()
+    sys.exit()
 
 
 if __name__ == '__main__':
