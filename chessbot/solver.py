@@ -2,7 +2,7 @@
 
 from stockfish import Stockfish
 
-DEFAULT_PATH = 'chessbot\stockfish_15_win_x64_avx2\stockfish_15_x64_avx2.exe'
+DEFAULT_PATH = 'chessbot/bin/stockfish.exe'
 DEFAULT_PARAMS = {
     "Contempt": 0,
     "Min Split Depth": 0,
