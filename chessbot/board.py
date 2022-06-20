@@ -90,7 +90,8 @@ def convert_fen_to_image(fen, previous_move=None):
 
 def generate_new_board(notation, random_mode = False):
     """
-    Generate chess board. Can either generate from FEN notation or random_state
+    Generate chess board. Can either generate from FEN notation or random_state.
+    
     Returns board image and string matrix of inner board representation.
     """
     if random_mode:
