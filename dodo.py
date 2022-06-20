@@ -66,6 +66,29 @@ def task_mo():
            }
 
 
+def task_get_stockfish():
+    """Download stockfish binary."""
+    return {
+            'actions': ['python chessbot/stockfish_downloader.py']
+           }
+
+
+def task_sdist():
+    """Create source distribution."""
+    return {
+            'actions': ['python -m build -s'],
+            'task_dep': ['gitclean', 'mo'],
+           }
+
+
+def task_wheel():
+    """Create binary wheel distribution."""
+    return {
+            'actions': ['python -m build -w'],
+            'task_dep': ['mo', 'get_stockfish'],
+           }
+
+
 def task_app():
     """Run application."""
     return {
