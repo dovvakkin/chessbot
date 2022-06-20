@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-06-19 18:55+0300\n"
+"POT-Creation-Date: 2022-06-20 04:29+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -18,39 +18,59 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.10.3\n"
 
-#: chessbot/__main__.py:60
+#: chessbot/__main__.py:87
 msgid "Покеда"
 msgstr "Bye"
 
-#: chessbot/__main__.py:70
+#: chessbot/__main__.py:96
 msgid "Сделай свой ход"
 msgstr "Make your move"
 
-#: chessbot/__main__.py:95
+#: chessbot/__main__.py:120
+msgid "Ход робота"
+msgstr "Human destroyer AI makes move"
+
+#: chessbot/__main__.py:130 chessbot/__main__.py:170 chessbot/__main__.py:193
+msgid "Победа!!!!!!"
+msgstr "Victory!!!!!!"
+
+#: chessbot/__main__.py:145 chessbot/__main__.py:176
+msgid "Поражение((("
+msgstr "You lose(((((("
+
+#: chessbot/__main__.py:162
 msgid "Сделай следующий ход"
 msgstr "Make next move"
 
-#: chessbot/__main__.py:104
+#: chessbot/__main__.py:184
 msgid "Невозможный ход"
 msgstr "Impossible move"
 
-#: chessbot/__main__.py:114
-msgid "Куда поставить фигуру с "
-msgstr "Where to place piece from "
+#: chessbot/__main__.py:201
+msgid "Выберите ход для фигуры с поля "
+msgstr "Where to put piece from "
 
-#: chessbot/__main__.py:124
-msgid "Фигуры не выбрано"
+#: chessbot/__main__.py:211
+msgid "Фигура не выбрана"
 msgstr "No piece selected"
 
-#: chessbot/__main__.py:135
-msgid "Не убiй!"
-msgstr "Thou shalt not kill"
+#: chessbot/__main__.py:222
+msgid "Остановка работы приложения."
+msgstr "Stop."
 
-#: chessbot/__main__.py:137
-msgid "Ня пока(("
-msgstr "Adios amigo"
+#: chessbot/__main__.py:229
+msgid "Запуск приложения."
+msgstr "Start."
 
-#: chessbot/__main__.py:144
-msgid "Поехали!"
-msgstr "Go go go!"
+#~ msgid "Куда поставить фигуру с "
+#~ msgstr "Where to place piece from "
+
+#~ msgid "Не убiй!"
+#~ msgstr "Thou shalt not kill"
+
+#~ msgid "Ня пока(("
+#~ msgstr "Adios amigo"
+
+#~ msgid "Поехали!"
+#~ msgstr "Go go go!"
 
