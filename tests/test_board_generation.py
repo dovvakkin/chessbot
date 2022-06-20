@@ -1,6 +1,6 @@
 """Test for board generation and FEN -> array conversion."""
 import numpy as np
-from .board import Board, convert_fen_to_array
+from chessbot.board import Board, convert_fen_to_array
 
 
 def test_fen_to_array():

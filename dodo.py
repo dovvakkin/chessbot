@@ -24,8 +24,7 @@ def task_html():
 
 def task_test():
     """Preform tests."""
-    yield {'actions': ['pytest'], 'name': "test"}
-
+    yield {'actions': ['pytest'], 'name': "tests"}
 
 
 

@@ -1,6 +1,6 @@
 """Tests for pieces' moves correctness."""
-from . import chess
-from .chess import translate
+from chessbot import chess
+from chessbot.chess import translate
 
 
 def test_rook_move():
