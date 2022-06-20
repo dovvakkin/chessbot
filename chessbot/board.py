@@ -1,5 +1,7 @@
 """Module with board representing class and FEN notation handling."""
 
+import os
+
 from copy import deepcopy
 from glob import glob
 from random import choice, randint
@@ -10,11 +12,12 @@ import numpy as np
 
 from . import piece
 
+BASE_DIR = os.path.dirname(__file__)
 INITIAL_NOTATION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 STORAGE = {}
 DEBUG_MODE = False
 
-for k in glob("chessbot/Board_images/*.png"):
+for k in glob(f"{BASE_DIR}/Board_images/*.png"):
     name = k.split(".png")[0]
     name = name.replace("\\", "/").split("/")[-1]
     STORAGE[name] = Image.open(k)
@@ -152,7 +155,7 @@ class Board():
                                                                 random_mode = random_mode
                                                                 )
 
-        self.board_image.save("chessbot/Current_game/initial_board.png")
+        self.board_image.save(f"{BASE_DIR}/Current_game/initial_board.png")
 
         self.black_ghost_piece = None
         self.white_ghost_piece = None
@@ -251,4 +254,4 @@ class Board():
 
         self.board_array = arr
         self.board_image = convert_array_to_image(arr)
-        self.board_image.save("chessbot/Current_game/board.png")
+        self.board_image.save(f"{BASE_DIR}/Current_game/board.png")

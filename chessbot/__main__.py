@@ -1,5 +1,6 @@
 """Module with Telegram bot's logic and program's mainloop."""
 
+import os
 import string
 import sys
 import time
@@ -13,6 +14,7 @@ from .chess import translate
 from .localization import set_system_lang
 
 
+BASE_DIR = os.path.dirname(__file__)
 TOKEN = "5505142382:AAEDArd2zRDlygMFYW_PJNWDsb75dZLYfNo"
 bot = telebot.TeleBot(TOKEN, parse_mode=None)
 
@@ -94,7 +96,7 @@ def game_stop(message):
 def game_start(message):
     """Initialise game."""
     current_games[message.chat.id] = Player()
-    with open("chessbot/Current_game/initial_board.png", 'rb') as img:
+    with open(f"{BASE_DIR}/Current_game/initial_board.png", 'rb') as img:
         bot.send_photo(message.chat.id, photo=img,
                        caption=_('Сделай свой ход'), reply_markup=make_keyboard())
 
@@ -112,7 +114,7 @@ def handle_query(call):
         if move_check == 1:
             # Checking turn
             current_games[chat_id].clear_accum()
-            img = open("chessbot/Current_game/board.png", 'rb') # pylint: disable=consider-using-with
+            img = open(f"{BASE_DIR}/Current_game/board.png", 'rb') # pylint: disable=consider-using-with
             bot.edit_message_media(
                 chat_id=call.message.chat.id,
                 media=types.InputMediaPhoto(media=img),
@@ -154,7 +156,7 @@ def handle_query(call):
                     else:
                         # Preparation for next turn
                         current_games[chat_id].clear_accum()
-                        img = open("chessbot/Current_game/board.png", 'rb') # pylint: disable=consider-using-with
+                        img = open(f"{BASE_DIR}/Current_game/board.png", 'rb') # pylint: disable=consider-using-with
 
                         bot.edit_message_media(
                             chat_id=call.message.chat.id,

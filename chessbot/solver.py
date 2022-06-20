@@ -1,8 +1,10 @@
 """A module to launch Stockfish engine wrapper."""
 
+import os
 from stockfish import Stockfish
 
-DEFAULT_PATH = 'chessbot/bin/stockfish.exe'
+BASE_DIR = os.path.dirname(__file__)
+DEFAULT_PATH = f'{BASE_DIR}/bin/stockfish.exe'
 DEFAULT_PARAMS = {
     "Contempt": 0,
     "Min Split Depth": 0,
