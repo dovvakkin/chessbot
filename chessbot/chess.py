@@ -63,6 +63,7 @@ class Chess():
 
         precondition: `start` and `to` are valid positions on the board
         """
+        # pylint: disable=unsubscriptable-object, too-many-statements, too-many-return-statements
         if self.board.board[start[0]][start[1]] is None:
             return 0
 
@@ -165,8 +166,8 @@ class Chess():
             self.turn = not self.turn
             self._update_fen()
             return 1
-        else:
-            return 0
+
+        return 0
 
     def _reverse_translate(self, pos):
         """Translate coordinates to literal positions."""
@@ -177,6 +178,7 @@ class Chess():
 
     def _update_fen(self):
         """Generate full FEN notation from inner representation of game."""
+        #pylint: disable=protected-access
         # 0 - update iternal array and image of board:
         self.board._update_board()
 

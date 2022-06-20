@@ -5,12 +5,10 @@ from os import listdir
 from os.path import isfile, join
 import platform
 import shutil
-import stat
 from tempfile import mkdtemp
 from zipfile import ZipFile
 
 import requests
-
 from tqdm.auto import tqdm
 
 LINUX_BIN = 'https://stockfishchess.org/files/stockfish_15_linux_x64_avx2.zip'

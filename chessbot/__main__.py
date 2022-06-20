@@ -1,14 +1,16 @@
 """Module with Telegram bot's logic and program's mainloop."""
 
-import time
 import string
+import sys
+import time
+
 import telebot
 from telebot import types
+
 from . import chess
+from . import solver
 from .chess import translate
 from .localization import set_system_lang
-from . import solver
-import sys
 
 
 TOKEN = "5505142382:AAEDArd2zRDlygMFYW_PJNWDsb75dZLYfNo"
@@ -92,14 +94,15 @@ def game_stop(message):
 def game_start(message):
     """Initialise game."""
     current_games[message.chat.id] = Player()
-    img = open("chessbot/Current_game/initial_board.png", 'rb')
-    bot.send_photo(message.chat.id, photo=img,
-                   caption=_('Сделай свой ход'), reply_markup=make_keyboard())
+    with open("chessbot/Current_game/initial_board.png", 'rb') as img:
+        bot.send_photo(message.chat.id, photo=img,
+                       caption=_('Сделай свой ход'), reply_markup=make_keyboard())
 
 
 @bot.callback_query_handler(func=lambda call: True)
 def handle_query(call):
     """Mainloop. Take turn from player and solver."""
+    # pylint: disable=too-many-statements
     move = call.data
     chat_id = call.message.chat.id
     if current_games[chat_id].has_prev_cell():
@@ -109,7 +112,7 @@ def handle_query(call):
         if move_check == 1:
             # Checking turn
             current_games[chat_id].clear_accum()
-            img = open("chessbot/Current_game/board.png", 'rb')
+            img = open("chessbot/Current_game/board.png", 'rb') # pylint: disable=consider-using-with
             bot.edit_message_media(
                 chat_id=call.message.chat.id,
                 media=types.InputMediaPhoto(media=img),
@@ -151,7 +154,8 @@ def handle_query(call):
                     else:
                         # Preparation for next turn
                         current_games[chat_id].clear_accum()
-                        img = open("chessbot/Current_game/board.png", 'rb')
+                        img = open("chessbot/Current_game/board.png", 'rb') # pylint: disable=consider-using-with
+
                         bot.edit_message_media(
                             chat_id=call.message.chat.id,
                             media=types.InputMediaPhoto(media=img),

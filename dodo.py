@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
-'''
-Default: create wheel
-'''
+"""Create wheel by default."""
+
 import glob
 from doit.tools import create_folder
 
-DOIT_CONFIG = {'default_tasks': ['all']}
+DOIT_CONFIG = {'default_tasks': ['wheel']}
 
 
 def task_gitclean():
@@ -24,7 +23,10 @@ def task_html():
 
 def task_test():
     """Preform tests."""
-    yield {'actions': ['pytest'], 'name': "tests"}
+    yield {
+            'actions': ['pytest'], 'name': "tests",
+            'verbosity': 2
+          }
 
 
 
@@ -76,7 +78,7 @@ def task_sdist():
     """Create source distribution."""
     return {
             'actions': ['python -m build -s'],
-            'task_dep': ['gitclean', 'mo'],
+            'task_dep': ['gitclean', 'mo', 'get_stockfish'],
            }
 
 
@@ -84,7 +86,7 @@ def task_wheel():
     """Create binary wheel distribution."""
     return {
             'actions': ['python -m build -w'],
-            'task_dep': ['mo', 'get_stockfish'],
+            'task_dep': ['gitclean', 'mo', 'get_stockfish'],
            }
 
 
@@ -92,5 +94,29 @@ def task_app():
     """Run application."""
     return {
             'actions': ['python -m chessbot'],
-            'task_dep': ['mo'],
+            'task_dep': ['mo', 'get_stockfish'],
+           }
+
+
+def task_lint():
+    """Check codestyle with pylint."""
+    return {
+            'actions': ['pylint chessbot'],
+            'verbosity': 2
+           }
+
+
+def task_docstyle():
+    """Check docstrings with pydocstyle."""
+    return {
+            'actions': ['pydocstyle chessbot'],
+            'verbosity': 2
+           }
+
+
+def task_check():
+    """Perform all checks."""
+    return {
+            'actions': None,
+            'task_dep': ['lint', 'docstyle', 'test']
            }
