@@ -17,7 +17,7 @@ LINUX_BIN = 'https://stockfishchess.org/files/stockfish_15_linux_x64_avx2.zip'
 WINDOWS_BIN = 'https://stockfishchess.org/files/stockfish_15_win_x64_avx2.zip'
 MACOS_BIN = 'http://macchess.internetcontact.be/downloads/stockfish-14.1-mac.zip'
 
-STOCKFISH_EXECUTABLE = 'bin/stockfish.exe'
+STOCKFISH_EXECUTABLE = 'chessbot/bin/stockfish.exe'
 
 
 def download(url, target):
@@ -57,7 +57,7 @@ def create_bin_according_to_os(system_name):
 
     os.makedirs(os.path.dirname(STOCKFISH_EXECUTABLE), exist_ok=True)
     shutil.move(join(tmp_dir, onlyfiles[0]), STOCKFISH_EXECUTABLE)
-    os.chmod(STOCKFISH_EXECUTABLE, stat.S_IEXEC)
+    os.chmod(STOCKFISH_EXECUTABLE, 0o775)
 
     shutil.rmtree(tmp_dir)
 
